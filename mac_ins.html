@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-ha-style="developer">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mac 终端环境配置备忘</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0a0a;
+      --surface: #0a0a0a;
+      --surface-container-lowest: #0a0a0a;
+      --surface-container-low: #0d160d;
+      --surface-container: #102610;
+      --surface-container-high: #153315;
+      --primary: #33ff00;
+      --secondary: #ffb000;
+      --muted: #1f521f;
+      --accent: #33ff00;
+      --error: #ff3333;
+      --border: #1f521f;
+      --border-strong: #33ff00;
+      --fg-1: #33ff00;
+      --fg-2: #b7ff9a;
+      --fg-muted: #1f521f;
+      --on-primary: #050505;
+      --green: #33ff00;
+      --yellow: #ffb000;
+      --red: #ff3333;
+      --blue: #72d5ff;
+      --font-headline: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+      --font-body: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+      --space-xs: 4px; --space-sm: 8px; --space-md: 12px;
+      --space-lg: 16px; --space-xl: 20px; --space-2xl: 24px;
+      --space-3xl: 32px; --space-4xl: 48px; --space-5xl: 64px;
+      --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+      --radius-xl: 0; --radius-2xl: 0; --radius-pill: 0;
+      --shadow-sm: none;
+      --shadow-md: none;
+      --shadow-lg: none;
+      --shadow-accent: none;
+      --text-glow: 0 0 5px rgba(51, 255, 0, 0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 14px; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg-1);
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* Focus */
+    :focus-visible {
+      outline: 1px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* ===== LAYOUT ===== */
+    .dev-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    /* ===== PROMPT LINE ===== */
+    .terminal-prompt {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-lg);
+      border: 1px solid var(--border-strong);
+      background: var(--surface-container-low);
+      margin-bottom: var(--space-xl);
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    .prompt-label {
+      color: var(--fg-1);
+      font-weight: 700;
+      font-size: 1rem;
+      text-shadow: var(--text-glow);
+      white-space: nowrap;
+    }
+
+    .prompt-meta {
+      display: flex;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--fg-2);
+    }
+
+    .prompt-meta span { color: var(--yellow); }
+
+    .cursor-block {
+      display: inline-block;
+      width: 0.6em;
+      height: 1.1em;
+      background: var(--primary);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-block { animation: none; }
+    }
+
+    /* ===== PANES ===== */
+    .terminal-pane {
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-xl);
+      background: var(--surface);
+    }
+
+    .pane-title {
+      display: flex;
+      align-items: center;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--fg-1);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pane-title .icon { margin-right: var(--space-sm); color: var(--yellow); }
+
+    .pane-body { padding: var(--space-lg); }
+
+    /* ===== FINDING BAR ===== */
+    .finding-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--surface-container-low);
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-xl);
+      font-size: 0.85rem;
+    }
+
+    .finding-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .chip-label {
+      color: var(--fg-muted);
+    }
+
+    .chip-val { color: var(--fg-2); }
+    .chip-val.ok { color: var(--green); }
+    .chip-val.warn { color: var(--yellow); }
+    .chip-val.err { color: var(--red); }
+
+    /* ===== RISK CHECKLIST ===== */
+    .risk-checklist { list-style: none; }
+
+    .risk-item {
+      display: flex;
+      gap: var(--space-md);
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .risk-item:last-child { border-bottom: none; }
+
+    .status-code {
+      font-weight: 700;
+      min-width: 3.5em;
+      flex-shrink: 0;
+    }
+
+    .status-code.ok { color: var(--green); }
+    .status-code.warn { color: var(--yellow); }
+    .status-code.err { color: var(--red); }
+    .status-code.info { color: var(--blue); }
+
+    .risk-content { flex: 1; }
+
+    .risk-title { color: var(--fg-2); font-weight: 500; margin-bottom: var(--space-xs); }
+    .risk-detail { color: var(--fg-muted); font-size: 0.8rem; line-height: 1.5; }
+
+    /* ===== ENVIRONMENT TABLE ===== */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .env-table th {
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      color: var(--fg-1);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .env-table td {
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--border);
+      color: var(--fg-2);
+    }
+
+    .env-table tr:nth-child(even) td { background: var(--surface-container-low); }
+
+    /* ===== CODE BLOCKS ===== */
+    pre {
+      background: var(--surface-container-low);
+      border: 1px solid var(--border);
+      padding: var(--space-lg);
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--fg-2);
+      margin-bottom: var(--space-lg);
+    }
+
+    pre:last-child { margin-bottom: 0; }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+    }
+
+    .inline-code {
+      background: var(--surface-container);
+      padding: 1px 5px;
+      border: 1px solid var(--border);
+      color: var(--yellow);
+      font-size: 0.85em;
+    }
+
+    /* ===== STEP SECTIONS ===== */
+    .step-section { margin-bottom: var(--space-2xl); }
+
+    .step-header {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .step-num {
+      color: var(--yellow);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .step-title {
+      color: var(--fg-1);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .step-note {
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      background: var(--surface-container-low);
+      border-left: 3px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 0.85rem;
+    }
+
+    /* ===== COMPONENT TABLE ===== */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .comp-table th {
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      color: var(--fg-1);
+      border: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .comp-table td {
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--border);
+      color: var(--fg-2);
+      vertical-align: top;
+    }
+
+    .comp-table tr:nth-child(even) td { background: var(--surface-container-low); }
+
+    /* ===== QA SECTION ===== */
+    .qa-item {
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-md);
+    }
+
+    .qa-q {
+      padding: var(--space-md);
+      background: var(--surface-container);
+      color: var(--yellow);
+      font-weight: 600;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+
+    .qa-q::before { content: 'Q:'; color: var(--red); font-weight: 700; }
+
+    .qa-a {
+      padding: var(--space-md);
+      color: var(--fg-2);
+      font-size: 0.9rem;
+    }
+
+    .qa-a::before { content: 'A:'; color: var(--green); font-weight: 700; margin-right: var(--space-sm); }
+
+    /* ===== DIVIDER ===== */
+    .ascii-divider {
+      color: var(--muted);
+      text-align: center;
+      margin: var(--space-xl) 0;
+      overflow: hidden;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ===== COPY HANDOFF ===== */
+    .copy-handoff {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      background: var(--surface-container);
+      border: 1px solid var(--border-strong);
+      margin-top: var(--space-xl);
+      flex-wrap: wrap;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: var(--on-primary);
+      border: none;
+      padding: var(--space-sm) var(--space-lg);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: opacity 0.15s;
+    }
+
+    .copy-btn:hover { opacity: 0.85; }
+    .copy-btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+
+    .copy-desc { color: var(--fg-muted); font-size: 0.85rem; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 640px) {
+      html { font-size: 13px; }
+      .dev-shell { padding: var(--space-md); }
+      .terminal-prompt { flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+      pre { font-size: 0.78rem; }
+      .step-header { flex-direction: column; gap: var(--space-xs); }
+      .pane-body { padding: var(--space-md); }
+      .env-table, .comp-table { font-size: 0.8rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="dev-shell">
+
+  <!-- PROMPT LINE -->
+  <div class="terminal-prompt" role="banner">
+    <span class="prompt-label">➜ Mac终端配置备忘</span>
+    <div class="prompt-meta">
+      <span>macOS 15.x</span>
+      <span>zsh 5.9</span>
+      <span>Ghostty</span>
+      <span>2026-05-29</span>
+    </div>
+    <span class="cursor-block" aria-hidden="true"></span>
+  </div>
+
+  <!-- FINDING BAR -->
+  <div class="finding-bar" role="complementary" aria-label="摘要">
+    <div class="finding-chip">
+      <span class="chip-label">记录时间:</span>
+      <span class="chip-val">2026-05-29</span>
+    </div>
+    <div class="finding-chip">
+      <span class="chip-label">系统:</span>
+      <span class="chip-val">macOS 15.x (Sequoia)</span>
+    </div>
+    <div class="finding-chip">
+      <span class="chip-label">Shell:</span>
+      <span class="chip-val">zsh 5.9</span>
+    </div>
+    <div class="finding-chip">
+      <span class="chip-label">终端:</span>
+      <span class="chip-val">Ghostty</span>
+    </div>
+    <div class="finding-chip">
+      <span class="chip-label">代理:</span>
+      <span class="chip-val warn">http://localhost:7890</span>
+    </div>
+    <div class="finding-chip">
+      <span class="chip-label">步骤总数:</span>
+      <span class="chip-val ok">9</span>
+    </div>
+  </div>
+
+  <!-- ENVIRONMENT -->
+  <div class="terminal-pane" id="env">
+    <div class="pane-title">
+      <span class="icon">▣</span>环境信息
+    </div>
+    <div class="pane-body">
+      <table class="env-table">
+        <thead>
+          <tr>
+            <th>项目</th>
+            <th>版本 / 值</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>macOS</td><td>15.x (Sequoia)</td></tr>
+          <tr><td>Shell</td><td>zsh 5.9</td></tr>
+          <tr><td>终端</td><td>Ghostty</td></tr>
+          <tr><td>代理</td><td><code class="inline-code">http://localhost:7890</code>（下载 GitHub 资源时使用）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ascii-divider">════════════════════════════════════════════════════</div>
+
+  <!-- STEP 1: HOMEBREW -->
+  <div class="step-section" id="step1">
+    <div class="step-header">
+      <span class="step-num">[01]</span>
+      <span class="step-title">安装 Homebrew</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>export ALL_PROXY=http://localhost:7890
+/bin/bash -c "$(curl -fsSL -x http://localhost:7890 https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+      <div class="step-note">
+        注意：安装完成后，Homebrew 会提示将初始化命令写入 <code class="inline-code">~/.zprofile</code>。但 macOS 上很多终端默认不会加载 <code class="inline-code">.zprofile</code>，因此<strong>必须在 <code class="inline-code">~/.zshrc</code> 开头也加上 Homebrew 的 PATH 初始化</strong>，否则后续安装的命令（如 <code class="inline-code">zoxide</code>、<code class="inline-code">fzf</code>）会找不到。
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: OH MY ZSH -->
+  <div class="step-section" id="step2">
+    <div class="step-header">
+      <span class="step-num">[02]</span>
+      <span class="step-title">安装 Oh My Zsh</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"</code></pre>
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin-top: var(--space-md);">
+        安装脚本会自动备份 <code class="inline-code">~/.zshrc</code> 到 <code class="inline-code">~/.zshrc.pre-oh-my-zsh</code>。
+      </p>
+    </div>
+  </div>
+
+  <!-- STEP 3: PLUGINS -->
+  <div class="step-section" id="step3">
+    <div class="step-header">
+      <span class="step-num">[03]</span>
+      <span class="step-title">安装插件</span>
+    </div>
+    <div class="pane-body">
+      <pre><code># 命令自动建议（灰色提示文字）
+git clone https://github.com/zsh-users/zsh-autosuggestions \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# 语法高亮（绿色 = 合法命令，红色 = 非法）
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting</code></pre>
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin-top: var(--space-md);">
+        内置插件无需安装，直接在 <code class="inline-code">~/.zshrc</code> 的 <code class="inline-code">plugins</code> 中启用：
+      </p>
+      <ul style="color: var(--fg-2); font-size: 0.85rem; margin-top: var(--space-sm); padding-left: var(--space-xl);">
+        <li><code class="inline-code">git</code> — Git 别名和补全</li>
+        <li><code class="inline-code">sudo</code> — 按 ESC 两次自动加 sudo</li>
+        <li><code class="inline-code">extract</code> — <code class="inline-code">x &lt;file&gt;</code> 解压任意格式</li>
+        <li><code class="inline-code">history</code> — 历史命令快捷操作</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STEP 4: STARSHIP -->
+  <div class="step-section" id="step4">
+    <div class="step-header">
+      <span class="step-num">[04]</span>
+      <span class="step-title">安装 Starship</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin</code></pre>
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin-top: var(--space-sm);">
+        确保 <code class="inline-code">~/.local/bin</code> 在 PATH 中（见 <code class="inline-code">~/.zshrc</code> 配置）。
+      </p>
+    </div>
+  </div>
+
+  <!-- STEP 5: NERD FONT -->
+  <div class="step-section" id="step5">
+    <div class="step-header">
+      <span class="step-num">[05]</span>
+      <span class="step-title">安装 Nerd Font</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>mkdir -p ~/Library/Fonts
+cd /tmp
+curl -x http://localhost:7890 -sL \
+  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.tar.xz" \
+  -o JetBrainsMono.tar.xz
+tar -xJf JetBrainsMono.tar.xz -C ~/Library/Fonts/</code></pre>
+      <div class="step-note">
+        终端必须使用 Nerd Font 的 <strong>Mono 变体</strong>（等宽），否则图标错位。
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6: CONFIG FILES -->
+  <div class="step-section" id="step6">
+    <div class="step-header">
+      <span class="step-num">[06]</span>
+      <span class="step-title">配置文件</span>
+    </div>
+    <div class="pane-body">
+
+      <!-- zshrc -->
+      <div style="margin-bottom: var(--space-2xl);">
+        <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-md); text-transform: uppercase;">5.1 ~/.zshrc</p>
+        <pre><code># 必须先初始化 Homebrew，否则后续安装的命令找不到
+#（macOS 终端默认不加载 ~/.zprofile，所以这里必须加）
+eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+
+# PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Oh My Zsh
+export ZSH="$HOME/.oh-my-zsh"
+
+# 禁用内置主题，由 Starship 接管提示符
+ZSH_THEME=""
+
+# 插件
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  sudo
+  extract
+  history
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# 别名
+alias zshconfig="code ~/.zshrc"
+alias ohmyzsh="code ~/.oh-my-zsh"
+alias ll="ls -la"
+alias ..="cd .."
+alias ...="cd ../.."
+
+# NVM（如已安装）
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# SDKMAN!（Java 版本管理）
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Starship
+eval "$(starship init zsh)"
+
+# zoxide：智能目录跳转
+# ⚠️ 不要加 --cmd cd！默认会创建 z 和 zi 命令
+# 如果加了 --cmd cd，zoxide 只会接管 cd，不会创建 z
+eval "$(zoxide init zsh)"
+
+# fzf：模糊查找
+source &lt;(fzf --zsh)</code></pre>
+      </div>
+
+      <!-- starship.toml -->
+      <div style="margin-bottom: var(--space-2xl);">
+        <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-md); text-transform: uppercase;">5.2 ~/.config/starship.toml</p>
+        <pre><code># Starship 配置 - Catppuccin Mocha 配色
+
+format = """
+$directory$git_branch$git_status$nodejs$rust$golang$python
+$character"""
+
+[character]
+success_symbol = "[➜](#a6e3a1)"
+error_symbol = "[✗](#f38ba8)"
+vicmd_symbol = "[❮](#a6e3a1)"
+
+[directory]
+truncation_length = 3
+truncation_symbol = "…/"
+style = "bold #89b4fa"
+
+[git_branch]
+symbol = " "
+style = "bold #cba6f7"
+format = '[$symbol$branch]($style) '
+
+[git_status]
+style = "bold #fab387"
+format = '([$all_status$ahead_behind]($style) )'
+
+[nodejs]
+symbol = " "
+style = "#a6e3a1"
+format = '[$symbol($version)]($style) '
+
+[rust]
+symbol = " "
+style = "bold #f38ba8"
+format = '[$symbol($version)]($style) '
+
+[python]
+symbol = " "
+style = "#f9e2af"
+format = '[$symbol($version)]($style) '
+
+[golang]
+symbol = " "
+style = "#94e2d5"
+format = '[$symbol($version)]($style) '
+
+[cmd_duration]
+min_time = 2000
+format = '[$duration](bold #f9e2af) '
+
+[username]
+style_user = "bold #89b4fa"
+style_root = "bold #f38ba8"
+format = "[$user]($style) "
+disabled = true
+show_always = false
+
+[hostname]
+ssh_only = true
+format = "[@$hostname](bold #f9e2af) "
+disabled = false</code></pre>
+      </div>
+
+      <!-- ghostty config -->
+      <div>
+        <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin-bottom: var(--space-md); text-transform: uppercase;">5.3 ~/.config/ghostty/config</p>
+        <pre><code># Ghostty 配置
+
+# 主题
+theme = catppuccin-mocha
+
+# 字体（Mono 变体）
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 14
+
+# 窗口
+window-padding-x = 8
+window-padding-y = 8
+background-opacity = 0.95
+
+# 光标
+cursor-style = block
+cursor-color = #f5e0dc
+cursor-text = #1e1e2e
+
+# 其他
+mouse-hide-while-typing = true
+confirm-close-surface = false</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7: ZOXIDE & FZF -->
+  <div class="step-section" id="step7">
+    <div class="step-header">
+      <span class="step-num">[07]</span>
+      <span class="step-title">安装 zoxide 和 fzf</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>brew install zoxide fzf</code></pre>
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin: var(--space-md) 0;">
+        在 <code class="inline-code">~/.zshrc</code> 中添加初始化（放在 Starship 之后）：
+      </p>
+      <pre><code># zoxide：智能目录跳转
+# ⚠️ 默认参数会创建 z / zi 命令
+# 如果加 --cmd cd，zoxide 只会接管 cd，不会创建 z
+eval "$(zoxide init zsh)"
+
+# fzf：模糊查找 + 快捷键
+source &lt;(fzf --zsh)</code></pre>
+
+      <div class="terminal-pane" style="margin-top: var(--space-xl);">
+        <div class="pane-title"><span class="icon">▣</span>zoxide 用法</div>
+        <div class="pane-body">
+          <table class="comp-table">
+            <thead>
+              <tr><th>命令</th><th>作用</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="inline-code">z proj</code></td><td>跳转到历史中最匹配的 <code class="inline-code">*proj*</code> 目录</td></tr>
+              <tr><td><code class="inline-code">zi proj</code></td><td>交互式选择（多个匹配时弹出 fzf 列表）</td></tr>
+              <tr><td><code class="inline-code">zq proj</code></td><td>只查询会跳到哪，不实际跳转</td></tr>
+              <tr><td><code class="inline-code">z -</code></td><td>返回上一个目录</td></tr>
+              <tr><td><code class="inline-code">zoxide query -l</code></td><td>列出所有已记录的目录</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="terminal-pane" style="margin-top: var(--space-lg);">
+        <div class="pane-title"><span class="icon">▣</span>fzf 快捷键</div>
+        <div class="pane-body">
+          <table class="comp-table">
+            <thead>
+              <tr><th>快捷键</th><th>作用</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="inline-code">Ctrl + R</code></td><td>模糊搜索历史命令</td></tr>
+              <tr><td><code class="inline-code">Ctrl + T</code></td><td>模糊搜索文件</td></tr>
+              <tr><td><code class="inline-code">Alt + C</code></td><td>模糊搜索目录并进入</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8: SDKMAN -->
+  <div class="step-section" id="step8">
+    <div class="step-header">
+      <span class="step-num">[08]</span>
+      <span class="step-title">安装 SDKMAN!（Java 版本管理）</span>
+    </div>
+    <div class="pane-body">
+      <pre><code>export https_proxy=http://localhost:7890
+curl -s "https://get.sdkman.io" | zsh</code></pre>
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin: var(--space-md) 0;">
+        macOS 自带 Bash 3.2，但 SDKMAN! 安装脚本要求 Bash 4+。使用 zsh 执行可跳过该检查。
+        SDKMAN! 会自动将初始化代码追加到 <code class="inline-code">~/.zshrc</code>（见 5.1 节配置）。
+      </p>
+
+      <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); text-transform: uppercase;">安装 Java（最新 LTS）</p>
+      <pre><code># 安装默认推荐版本（当前为 Java 25 LTS）
+sdk install java
+
+# 或指定版本
+sdk install java 25.0.3-tem</code></pre>
+
+      <div class="step-note">
+        注意：<code class="inline-code">sdk install java</code> 不带版本号时，SDKMAN! 会自动选择当前默认的 LTS 版本。由于 SDKMAN! 管理 <code class="inline-code">JAVA_HOME</code>，<strong>不要在 <code class="inline-code">~/.zshrc</code> 中手动设置 <code class="inline-code">JAVA_HOME</code></strong>，否则版本切换会失效。
+      </div>
+
+      <div class="terminal-pane" style="margin-top: var(--space-xl);">
+        <div class="pane-title"><span class="icon">▣</span>SDKMAN! 常用命令</div>
+        <div class="pane-body">
+          <table class="comp-table">
+            <thead>
+              <tr><th>命令</th><th>作用</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="inline-code">sdk current java</code></td><td>查看当前 Java 版本</td></tr>
+              <tr><td><code class="inline-code">sdk list java</code></td><td>查看所有可用 Java 版本</td></tr>
+              <tr><td><code class="inline-code">sdk use java 21.0.11-tem</code></td><td>当前终端临时切换版本</td></tr>
+              <tr><td><code class="inline-code">sdk default java 21.0.11-tem</code></td><td>设置默认版本</td></tr>
+              <tr><td><code class="inline-code">sdk install maven</code></td><td>安装 Maven</td></tr>
+              <tr><td><code class="inline-code">sdk install gradle</code></td><td>安装 Gradle</td></tr>
+              <tr><td><code class="inline-code">sdk selfupdate</code></td><td>更新 SDKMAN! 本身</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 9: PM2 -->
+  <div class="step-section" id="step9">
+    <div class="step-header">
+      <span class="step-num">[09]</span>
+      <span class="step-title">安装 PM2（进程管理器）</span>
+    </div>
+    <div class="pane-body">
+      <p style="color: var(--fg-muted); font-size: 0.85rem; margin-bottom: var(--space-md);">
+        PM2 用于管理长期运行的后台进程（Node.js、Python、Shell 脚本等），并支持开机自动恢复。
+      </p>
+
+      <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); text-transform: uppercase;">安装</p>
+      <pre><code>npm install -g pm2</code></pre>
+
+      <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); text-transform: uppercase;">配置开机自启</p>
+      <pre><code># 生成并注册 launchd 服务
+pm2 startup launchd
+
+# 按提示执行输出的 sudo 命令，例如：
+# sudo env PATH=$PATH:/Users/yusizhen/.nvm/versions/node/v24.16.0/bin pm2 startup launchd -u yusizhen --hp /Users/yusizhen</code></pre>
+
+      <div class="step-note">
+        注意：<code class="inline-code">pm2 startup</code> 需要 sudo 权限，因为它要在 <code class="inline-code">/Library/LaunchDaemons</code> 或 <code class="inline-code">~/Library/LaunchAgents</code> 下创建 plist 文件。
+      </div>
+
+      <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); text-transform: uppercase;">ecosystem.config.js</p>
+      <pre><code>module.exports = {
+  apps: [
+    {
+      name: 'api-server',
+      script: './services/api/server.js',
+      instances: 1,
+      autorestart: true,
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      env: { NODE_ENV: 'production' }
+    },
+    {
+      name: 'data-processor',
+      script: './services/data/main.py',
+      interpreter: 'python3',
+      instances: 1,
+      autorestart: true
+    },
+    {
+      name: 'backup-job',
+      script: './scripts/backup.sh',
+      interpreter: 'bash',
+      instances: 1,
+      cron_restart: '0 2 * * *',
+      autorestart: false
+    }
+  ]
+};</code></pre>
+
+      <p style="color: var(--yellow); font-size: 0.9rem; font-weight: 600; margin: var(--space-lg) 0 var(--space-md); text-transform: uppercase;">启动与保存</p>
+      <pre><code># 启动所有进程
+pm2 start ecosystem.config.js
+
+# 查看状态
+pm2 status
+
+# 查看日志
+pm2 logs
+
+# 保存当前进程列表（关键！开机自启依赖此步骤）
+pm2 save</code></pre>
+
+      <div class="step-note" style="border-left-color: var(--red); color: var(--red);">
+        重要：每次增删进程后，必须执行 <code class="inline-code">pm2 save</code>，否则重启后不会自动恢复新进程。
+      </div>
+
+      <div class="terminal-pane" style="margin-top: var(--space-xl);">
+        <div class="pane-title"><span class="icon">▣</span>PM2 常用命令</div>
+        <div class="pane-body">
+          <table class="comp-table">
+            <thead>
+              <tr><th>命令</th><th>作用</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="inline-code">pm2 start &lt;name&gt;</code></td><td>启动进程</td></tr>
+              <tr><td><code class="inline-code">pm2 stop all</code></td><td>停止全部进程</td></tr>
+              <tr><td><code class="inline-code">pm2 restart &lt;name&gt;</code></td><td>重启指定进程</td></tr>
+              <tr><td><code class="inline-code">pm2 delete &lt;name&gt;</code></td><td>删除进程</td></tr>
+              <tr><td><code class="inline-code">pm2 logs &lt;name&gt;</code></td><td>查看指定进程日志</td></tr>
+              <tr><td><code class="inline-code">pm2 monit</code></td><td>打开实时监控面板</td></tr>
+              <tr><td><code class="inline-code">pm2 save</code></td><td>保存进程列表（供开机恢复）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVATION -->
+  <div class="step-section" id="activation">
+    <div class="step-header">
+      <span class="step-num">[✓]</span>
+      <span class="step-title">生效步骤</span>
+    </div>
+    <div class="pane-body">
+      <ol style="color: var(--fg-2); font-size: 0.9rem; padding-left: var(--space-xl); line-height: 2;">
+        <li><strong>完全退出 Ghostty</strong>（Cmd + Q）</li>
+        <li><strong>重新打开 Ghostty</strong></li>
+        <li>检查提示符是否正常显示</li>
+      </ol>
+      <pre><code># 验证 Starship
+starship --version
+
+# 验证字体（应显示图标而非方块）
+echo "    "</code></pre>
+    </div>
+  </div>
+
+  <div class="ascii-divider">════════════════════════════════════════════════════</div>
+
+  <!-- QA -->
+  <div class="terminal-pane" id="qa">
+    <div class="pane-title">
+      <span class="icon">▣</span>常见问题
+    </div>
+    <div class="pane-body">
+      <div class="qa-item">
+        <div class="qa-q">提示符显示方块或问号？</div>
+        <div class="qa-a">
+          Nerd Font 未正确安装。检查 Ghostty 配置的 <code class="inline-code">font-family</code> 是否匹配实际字体族名。
+          <pre><code># 查看已安装字体
+ls ~/Library/Fonts/ | grep -i jetbrains</code></pre>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">Starship 配置报错 TOML parse error？</div>
+        <div class="qa-a">
+          格式字符串中使用了双引号 <code class="inline-code">"</code> 但包含 <code class="inline-code">\[</code> 转义。改用单引号 <code class="inline-code">'</code> 包裹含转义的字符串。
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">zoxide / fzf 命令找不到？</div>
+        <div class="qa-a">
+          检查两点：<br>
+          1. <code class="inline-code">~/.zshrc</code> 开头<strong>必须有 Homebrew 初始化</strong>，因为 macOS 终端默认不加载 <code class="inline-code">~/.zprofile</code>：
+          <pre><code>eval "$(/opt/homebrew/bin/brew shellenv zsh)"</code></pre>
+          2. <strong>zoxide 不要加 <code class="inline-code">--cmd cd</code></strong>，否则不会创建 <code class="inline-code">z</code> 命令：
+          <pre><code># ✅ 正确
+eval "$(zoxide init zsh)"
+
+# ❌ 错误（只有 cd / cdi，没有 z / zi）
+eval "$(zoxide init zsh --cmd cd)"</code></pre>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-q">之前装过 Powerlevel10k，如何彻底清理？</div>
+        <div class="qa-a">
+          <pre><code>rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
+rm -f ~/.p10k.zsh
+rm -rf ~/.cache/p10k*
+rm -f ~/.zcompdump*</code></pre>
+          然后在 <code class="inline-code">~/.zshrc</code> 中删除所有含 <code class="inline-code">p10k</code> 或 <code class="inline-code">powerlevel10k</code> 的行。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="terminal-pane" id="components">
+    <div class="pane-title">
+      <span class="icon">▣</span>组件说明
+    </div>
+    <div class="pane-body">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>组件</th>
+            <th>作用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Ghostty</strong></td><td>终端模拟器，GPU 加速，原生 macOS 应用</td></tr>
+          <tr><td><strong>Oh My Zsh</strong></td><td>zsh 插件框架，管理插件和补全</td></tr>
+          <tr><td><strong>Starship</strong></td><td>命令提示符主题，Rust 编写，跨 Shell</td></tr>
+          <tr><td><strong>JetBrainsMono Nerd Font</strong></td><td>等宽编程字体，含图标字形</td></tr>
+          <tr><td><strong>Homebrew</strong></td><td>macOS 包管理器</td></tr>
+          <tr><td><strong>zoxide</strong></td><td>智能目录跳转，替代 <code class="inline-code">cd</code></td></tr>
+          <tr><td><strong>fzf</strong></td><td>模糊查找工具</td></tr>
+          <tr><td><strong>Catppuccin Mocha</strong></td><td>暗色配色方案，低饱和度护眼</td></tr>
+          <tr><td><strong>SDKMAN!</strong></td><td>Java/JVM 工具链版本管理器（Java、Maven、Gradle 等）</td></tr>
+          <tr><td><strong>PM2</strong></td><td>Node.js 进程管理器，支持开机自启、日志管理、进程监控</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COPY HANDOFF -->
+  <div class="copy-handoff">
+    <button class="copy-btn" id="copyBtn" type="button">[ 复制摘要 ]</button>
+    <span class="copy-desc">复制本文档核心配置路径到剪贴板</span>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var summary = [
+      'Mac 终端环境配置备忘',
+      '系统: macOS 15.x | Shell: zsh 5.9 | 终端: Ghostty',
+      '',
+      '配置文件路径:',
+      '  ~/.zshrc',
+      '  ~/.config/starship.toml',
+      '  ~/.config/ghostty/config',
+      '',
+      '核心步骤:',
+      '  [01] 安装 Homebrew',
+      '  [02] 安装 Oh My Zsh',
+      '  [03] 安装 zsh-autosuggestions / zsh-syntax-highlighting',
+      '  [04] 安装 Starship',
+      '  [05] 安装 JetBrainsMono Nerd Font',
+      '  [06] 写入配置文件',
+      '  [07] 安装 zoxide + fzf',
+      '  [08] 安装 SDKMAN! (Java)',
+      '  [09] 安装 PM2',
+      '',
+      '代理: http://localhost:7890'
+    ].join('\n');
+
+    var btn = document.getElementById('copyBtn');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        navigator.clipboard.writeText(summary).then(function () {
+          btn.textContent = '[ 已复制! ]';
+          setTimeout(function () { btn.textContent = '[ 复制摘要 ]'; }, 2000);
+        }).catch(function () {
+          btn.textContent = '[ 复制失败 ]';
+          setTimeout(function () { btn.textContent = '[ 复制摘要 ]'; }, 2000);
+        });
+      });
+    }
+
+    // Scroll to hash on load
+    if (location.hash) {
+      var el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView();
+    }
+  })();
+</script>
+</body>
+</html>
