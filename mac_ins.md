@@ -486,7 +486,75 @@ alias mdr="markdown-reader"
 
 ---
 
-## 11. 生效
+## 11. 安装 Glow
+
+终端 Markdown 渲染器，基于 Charmbracelet 的 TUI 框架。相比 `markdown-reader` 更轻量，适合日常快速阅读 Markdown 文件。
+
+> 项目：[charmbracelet/glow](https://github.com/charmbracelet/glow)
+
+### 安装（Homebrew）
+
+```bash
+brew install glow
+```
+
+### 用法
+
+```bash
+# TUI 浏览当前目录所有 markdown（推荐）
+glow -t .
+
+# 直接打开单个文件
+glow -t README.md
+
+# 限制宽度
+glow -t -w 80 README.md
+
+# 带行号
+glow -t -l README.md
+```
+
+> **注意**：`-t`（TUI 模式）是推荐用法。它使用内置渲染引擎，自动分页且无乱码。不使用 `-t` 时 glow 会调用系统 `$PAGER`（如 `less`），在 Ghostty 下可能出现样式乱码。
+
+### 配置别名
+
+在 `~/.zshrc` 中添加：
+
+```zsh
+# glow: Markdown TUI 阅读器
+unalias md 2>/dev/null || true
+md() {
+  if [[ -f "$1" ]]; then
+    glow -t "$1"
+  elif [[ -d "$1" ]]; then
+    glow -t "$1"
+  else
+    glow -t .
+  fi
+}
+```
+
+> `unalias md` 是为了覆盖 Oh My Zsh 某些插件预定义的 `md='mkdir -p'` alias。
+
+之后可用：
+- `md` — 浏览当前目录所有 markdown
+- `md README.md` — 直接打开文件
+- `md ~/docs` — 浏览指定目录
+
+### TUI 快捷键
+
+| 按键 | 作用 |
+|------|------|
+| `↑`/`↓` 或 `j`/`k` | 滚动 |
+| `PgUp`/`PgDn` 或 `b`/`f` | 翻页 |
+| `g` / `G` | 跳到开头 / 结尾 |
+| `/` | 搜索文档内容 |
+| `←`/`→` | 文件列表 ↔ 预览切换 |
+| `q` / `Esc` | 退出 |
+
+---
+
+## 12. 生效
 
 1. **完全退出 Ghostty**（Cmd + Q）
 2. **重新打开 Ghostty**
@@ -563,4 +631,5 @@ rm -f ~/.zcompdump*
 | **SDKMAN!** | Java/JVM 工具链版本管理器（Java、Maven、Gradle 等） |
 | **PM2** | Node.js 进程管理器，支持开机自启、日志管理、进程监控 |
 | **GitHub CLI** | 终端操作 GitHub（issue、PR、star、release 等） |
+| **Glow** | 轻量终端 Markdown 渲染器，TUI 浏览，自动分页 |
 | **markdown-reader** | TUI Markdown 文件浏览器，支持 Mermaid/LaTeX/实时编辑 |
