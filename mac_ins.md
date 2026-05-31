@@ -554,7 +554,126 @@ md() {
 
 ---
 
-## 12. 生效
+## 12. 安装 bat
+
+`cat` 的替代品，支持语法高亮、Git 集成、自动分页。
+
+> 项目：[sharkdp/bat](https://github.com/sharkdp/bat)
+
+### 安装
+
+```bash
+brew install bat
+```
+
+### 基础用法
+
+```bash
+# 替代 cat，带语法高亮
+bat file.py
+
+# 查看多个文件（带文件名标题）
+bat file1.js file2.js
+
+# 只查看指定行范围
+bat --line-range 10:20 file.log
+
+# 显示不可见字符
+bat -A file.txt
+```
+
+### 关于分页
+
+bat 本身不内嵌分页器，但会自动调用系统的 `less`（macOS 自带 `/usr/bin/less`）。输出能 fit 在一屏内时自动退出，超出时进入分页模式。
+
+```bash
+# 禁用分页直接输出（适合管道）
+bat --paging=never file.txt | grep "error"
+```
+
+### 配置别名
+
+在 `~/.zshrc` 中添加：
+
+```zsh
+# 替代 cat（保留原 cat 可用）
+alias cat='bat --paging=never'
+```
+
+---
+
+## 13. 安装 codegraph
+
+本地代码智能索引工具，为 AI Agent 提供代码库的符号搜索、调用关系、影响分析等能力。
+
+> 项目：[colbymchenry/codegraph](https://github.com/colbymchenry/codegraph)
+
+### 安装
+
+```bash
+npm install -g @colbymchenry/codegraph
+```
+
+验证安装：
+
+```bash
+codegraph --version
+```
+
+### 初始化项目
+
+进入项目目录后执行：
+
+```bash
+# 初始化并建立索引
+codegraph init -i
+
+# 或先初始化，再手动索引
+codegraph init
+codegraph index
+```
+
+索引完成后，codegraph 会在后台监听文件变更并自动同步。
+
+### 常用 Alias
+
+在 `~/.zshrc` 中添加：
+
+```zsh
+source ~/.config/zsh/codegraph-aliases.zsh
+```
+
+`~/.config/zsh/codegraph-aliases.zsh` 内容参考：
+
+```zsh
+alias cg='codegraph'
+alias cg-idx='codegraph index'
+alias cg-s='codegraph sync'
+alias cg-st='codegraph status'
+alias cg-c='codegraph context'
+alias cg-tr='codegraph trace'
+alias cg-ca='codegraph callers'
+alias cg-ce='codegraph callees'
+alias cg-im='codegraph impact'
+alias cg-serve='codegraph serve --mcp'
+alias cg-h='glow ~/.config/zsh/codegraph-help.md 2>/dev/null || cat ~/.config/zsh/codegraph-help.md'
+```
+
+### MCP 服务
+
+codegraph 支持以 MCP 服务器模式运行，供 Claude 等 AI 工具调用：
+
+```bash
+# 启动 MCP 服务
+codegraph serve --mcp
+
+# 或使用 alias
+cg-serve
+```
+
+---
+
+## 14. 生效
 
 1. **完全退出 Ghostty**（Cmd + Q）
 2. **重新打开 Ghostty**
@@ -566,6 +685,12 @@ starship --version
 
 # 验证字体（应显示图标而非方块）
 echo "    "
+
+# 验证 bat
+bat --version
+
+# 验证 codegraph
+codegraph --version
 ```
 
 ---
@@ -632,4 +757,6 @@ rm -f ~/.zcompdump*
 | **PM2** | Node.js 进程管理器，支持开机自启、日志管理、进程监控 |
 | **GitHub CLI** | 终端操作 GitHub（issue、PR、star、release 等） |
 | **Glow** | 轻量终端 Markdown 渲染器，TUI 浏览，自动分页 |
+| **bat** | `cat` 替代品，语法高亮、Git 集成、自动分页 |
+| **codegraph** | 本地代码智能索引，为 AI Agent 提供符号搜索和调用分析 |
 | **markdown-reader** | TUI Markdown 文件浏览器，支持 Mermaid/LaTeX/实时编辑 |
