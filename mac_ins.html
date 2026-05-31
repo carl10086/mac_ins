@@ -668,176 +668,100 @@
   </style>
 </head>
 <body>
-  <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
-  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-title">$ mac_ins</div>
-        <div class="sidebar-subtitle">macOS Terminal Setup Guide</div>
-      </div>
-      <nav>
-        <ul class="nav-list">
-          <li class="nav-item"><a href="#env" class="nav-link"><span class="nav-step">00</span><span class="nav-text">环境信息</span></a></li>
-          <li class="nav-item"><a href="#brew" class="nav-link"><span class="nav-step">01</span><span class="nav-text">安装 Homebrew</span></a></li>
-          <li class="nav-item"><a href="#omz" class="nav-link"><span class="nav-step">02</span><span class="nav-text">安装 Oh My Zsh</span></a></li>
-          <li class="nav-item"><a href="#plugins" class="nav-link"><span class="nav-step">03</span><span class="nav-text">安装插件</span></a></li>
-          <li class="nav-item"><a href="#starship" class="nav-link"><span class="nav-step">04</span><span class="nav-text">安装 Starship</span></a></li>
-          <li class="nav-item"><a href="#nerdfont" class="nav-link"><span class="nav-step">05</span><span class="nav-text">安装 Nerd Font</span></a></li>
-          <li class="nav-item"><a href="#config" class="nav-link"><span class="nav-step">06</span><span class="nav-text">写入配置文件</span></a></li>
-          <li class="nav-item"><a href="#zoxide-fzf" class="nav-link"><span class="nav-step">07</span><span class="nav-text">zoxide &amp; fzf</span></a></li>
-          <li class="nav-item"><a href="#sdkman" class="nav-link"><span class="nav-step">08</span><span class="nav-text">安装 SDKMAN!</span></a></li>
-          <li class="nav-item"><a href="#pm2" class="nav-link"><span class="nav-step">09</span><span class="nav-text">安装 PM2</span></a></li>
-          <li class="nav-item"><a href="#gh" class="nav-link"><span class="nav-step">10</span><span class="nav-text">GitHub CLI</span></a></li>
-          <li class="nav-item"><a href="#mdr" class="nav-link"><span class="nav-step">11</span><span class="nav-text">markdown-reader</span></a></li>
-          <li class="nav-item"><a href="#glow" class="nav-link"><span class="nav-step">12</span><span class="nav-text">安装 Glow</span></a></li>
-          <li class="nav-item"><a href="#apply" class="nav-link"><span class="nav-step">13</span><span class="nav-text">生效</span></a></li>
-          <li class="nav-item"><a href="#faq" class="nav-link"><span class="nav-step">Q&amp;A</span><span class="nav-text">常见问题</span></a></li>
-          <li class="nav-item"><a href="#components" class="nav-link"><span class="nav-step">REF</span><span class="nav-text">组件说明</span></a></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <main class="main">
-      <header class="page-header">
-        <h1>Mac 终端环境配置备忘</h1>
-        <div class="meta-grid">
-          <div class="meta-item"><span class="meta-label">记录时间</span><span class="meta-value">2026-05-29</span></div>
-          <div class="meta-item"><span class="meta-label">系统</span><span class="meta-value">macOS 15.x (Sequoia)</span></div>
-          <div class="meta-item"><span class="meta-label">Shell</span><span class="meta-value">zsh 5.9</span></div>
-          <div class="meta-item"><span class="meta-label">终端</span><span class="meta-value">Ghostty</span></div>
-          <div class="meta-item"><span class="meta-label">代理</span><span class="meta-value">http://localhost:7890</span></div>
-          <div class="meta-item"><span class="meta-label">用途</span><span class="meta-value">重装或换机时快速恢复终端开发环境</span></div>
-        </div>
-      </header>
-
-      <section class="section" id="env">
-        <div class="section-header">
-          <span class="section-number small">00</span>
-          <h2>环境信息</h2>
-        </div>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>项目</th><th>版本 / 值</th></tr></thead>
-            <tbody>
-              <tr><td>macOS</td><td>15.x (Sequoia)</td></tr>
-              <tr><td>Shell</td><td>zsh 5.9</td></tr>
-              <tr><td>终端</td><td>Ghostty</td></tr>
-              <tr><td>代理</td><td><code>http://localhost:7890</code>（下载 GitHub 资源时使用）</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section" id="brew">
-        <div class="section-header">
-          <span class="section-number">01</span>
-          <h2>安装 Homebrew（如未安装）</h2>
-        </div>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>export ALL_PROXY=http://localhost:7890
-/bin/bash -c "$(curl -fsSL -x http://localhost:7890 https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
-        </div>
-        <div class="callout callout-warning">
-          <p><strong>注意</strong>：安装完成后，Homebrew 会提示将初始化命令写入 <code>~/.zprofile</code>。但 macOS 上很多终端默认不会加载 <code>.zprofile</code>，因此<strong>必须在 <code>~/.zshrc</code> 开头也加上 Homebrew 的 PATH 初始化</strong>，否则后续安装的命令（如 <code>zoxide</code>、<code>fzf</code>）会找不到。</p>
-        </div>
-      </section>
-
-      <section class="section" id="omz">
-        <div class="section-header">
-          <span class="section-number">02</span>
-          <h2>安装 Oh My Zsh</h2>
-        </div>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"</code></pre>
-        </div>
-        <p>安装完成后备份原配置：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 安装脚本会自动备份 ~/.zshrc 到 ~/.zshrc.pre-oh-my-zsh</code></pre>
-        </div>
-      </section>
-
-      <section class="section" id="plugins">
-        <div class="section-header">
-          <span class="section-number">03</span>
-          <h2>安装插件</h2>
-        </div>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 命令自动建议（灰色提示文字）
+<h1>Mac 终端环境配置备忘</h1>
+<blockquote>
+<p>记录时间：2026-05-29<br>系统：macOS 15.x (Darwin 25.5.0, Apple Silicon)<br>用途：重装或换机时快速恢复终端开发环境</p>
+</blockquote>
+<hr>
+<h2>环境信息</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>版本 / 值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS</td>
+<td>15.x (Sequoia)</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>zsh 5.9</td>
+</tr>
+<tr>
+<td>终端</td>
+<td>Ghostty</td>
+</tr>
+<tr>
+<td>代理</td>
+<td><code>http://localhost:7890</code>（下载 GitHub 资源时使用）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>1. 安装 Homebrew（如未安装）</h2>
+<pre><code class="language-bash">export ALL_PROXY=http://localhost:7890
+/bin/bash -c &quot;$(curl -fsSL -x http://localhost:7890 https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：安装完成后，Homebrew 会提示将初始化命令写入 <code>~/.zprofile</code>。但 macOS 上很多终端默认不会加载 <code>.zprofile</code>，因此<strong>必须在 <code>~/.zshrc</code> 开头也加上 Homebrew 的 PATH 初始化</strong>，否则后续安装的命令（如 <code>zoxide</code>、<code>fzf</code>）会找不到。</p>
+</blockquote>
+<h2>2. 安装 Oh My Zsh</h2>
+<pre><code class="language-bash">sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+</code></pre>
+<p>安装完成后备份原配置：</p>
+<pre><code class="language-bash"># 安装脚本会自动备份 ~/.zshrc 到 ~/.zshrc.pre-oh-my-zsh
+</code></pre>
+<hr>
+<h2>2. 安装插件</h2>
+<pre><code class="language-bash"># 命令自动建议（灰色提示文字）
 git clone https://github.com/zsh-users/zsh-autosuggestions \
   ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 # 语法高亮（绿色 = 合法命令，红色 = 非法）
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
-  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting</code></pre>
-        </div>
-        <p>内置插件无需安装，直接在 <code>~/.zshrc</code> 的 <code>plugins</code> 中启用：</p>
-        <ul>
-          <li><code>git</code> — Git 别名和补全</li>
-          <li><code>sudo</code> — 按 ESC 两次自动加 sudo</li>
-          <li><code>extract</code> — <code>x &lt;file&gt;</code> 解压任意格式</li>
-          <li><code>history</code> — 历史命令快捷操作</li>
-        </ul>
-      </section>
-
-      <section class="section" id="starship">
-        <div class="section-header">
-          <span class="section-number">04</span>
-          <h2>安装 Starship</h2>
-        </div>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin</code></pre>
-        </div>
-        <p>确保 <code>~/.local/bin</code> 在 PATH 中（见 <code>~/.zshrc</code> 配置）。</p>
-      </section>
-
-      <section class="section" id="nerdfont">
-        <div class="section-header">
-          <span class="section-number">05</span>
-          <h2>安装 Nerd Font</h2>
-        </div>
-        <p>下载并安装 JetBrainsMono Nerd Font（终端图标支持）：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>mkdir -p ~/Library/Fonts
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+</code></pre>
+<p>内置插件无需安装，直接在 <code>~/.zshrc</code> 的 <code>plugins</code> 中启用：</p>
+<ul>
+<li><code>git</code> — Git 别名和补全</li>
+<li><code>sudo</code> — 按 ESC 两次自动加 sudo</li>
+<li><code>extract</code> — <code>x &lt;file&gt;</code> 解压任意格式</li>
+<li><code>history</code> — 历史命令快捷操作</li>
+</ul>
+<hr>
+<h2>3. 安装 Starship</h2>
+<pre><code class="language-bash">curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin
+</code></pre>
+<p>确保 <code>~/.local/bin</code> 在 PATH 中（见 <code>~/.zshrc</code> 配置）。</p>
+<hr>
+<h2>4. 安装 Nerd Font</h2>
+<p>下载并安装 JetBrainsMono Nerd Font（终端图标支持）：</p>
+<pre><code class="language-bash">mkdir -p ~/Library/Fonts
 cd /tmp
 curl -x http://localhost:7890 -sL \
-  "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.tar.xz" \
+  &quot;https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.tar.xz&quot; \
   -o JetBrainsMono.tar.xz
-tar -xJf JetBrainsMono.tar.xz -C ~/Library/Fonts/</code></pre>
-        </div>
-        <div class="callout callout-warning">
-          <p><strong>注意</strong>：终端必须使用 Nerd Font 的 <strong>Mono</strong> 变体（等宽），否则图标错位。</p>
-        </div>
-      </section>
-
-      <section class="section" id="config">
-        <div class="section-header">
-          <span class="section-number">06</span>
-          <h2>写入配置文件</h2>
-        </div>
-
-        <h3>6.1 <code>~/.zshrc</code></h3>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 必须先初始化 Homebrew，否则后续安装的命令找不到
+tar -xJf JetBrainsMono.tar.xz -C ~/Library/Fonts/
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：终端必须使用 Nerd Font 的 <strong>Mono</strong> 变体（等宽），否则图标错位。</p>
+</blockquote>
+<hr>
+<h2>5. 写入配置文件</h2>
+<h3>5.1 <code>~/.zshrc</code></h3>
+<pre><code class="language-zsh"># 必须先初始化 Homebrew，否则后续安装的命令找不到
 #（macOS 终端默认不加载 ~/.zprofile，所以这里必须加）
-eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+eval &quot;$(/opt/homebrew/bin/brew shellenv zsh)&quot;
 
 # PATH
-export PATH="$HOME/.local/bin:$PATH"
+export PATH=&quot;$HOME/.local/bin:$PATH&quot;
 
 # Oh My Zsh
-export ZSH="$HOME/.oh-my-zsh"
+export ZSH=&quot;$HOME/.oh-my-zsh&quot;
 
 # 禁用内置主题，由 Starship 接管提示符
-ZSH_THEME=""
+ZSH_THEME=&quot;&quot;
 
 # 插件
 plugins=(
@@ -852,107 +776,101 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # 别名
-alias zshconfig="code ~/.zshrc"
-alias ohmyzsh="code ~/.oh-my-zsh"
-alias ll="ls -la"
-alias ..="cd .."
-alias ...="cd ../.."
+alias zshconfig=&quot;code ~/.zshrc&quot;
+alias ohmyzsh=&quot;code ~/.oh-my-zsh&quot;
+alias ll=&quot;ls -la&quot;
+alias ..=&quot;cd ..&quot;
+alias ...=&quot;cd ../..&quot;
 
 # NVM（如已安装）
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+export NVM_DIR=&quot;$([ -z &quot;${XDG_CONFIG_HOME-}&quot; ] &amp;&amp; printf %s &quot;${HOME}/.nvm&quot; || printf %s &quot;${XDG_CONFIG_HOME}/nvm&quot;)&quot;
+[ -s &quot;$NVM_DIR/nvm.sh&quot; ] &amp;&amp; \. &quot;$NVM_DIR/nvm.sh&quot;
 
 # SDKMAN!（Java 版本管理）
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR=&quot;$HOME/.sdkman&quot;
+[[ -s &quot;$HOME/.sdkman/bin/sdkman-init.sh&quot; ]] &amp;&amp; source &quot;$HOME/.sdkman/bin/sdkman-init.sh&quot;
 
 # Starship
-eval "$(starship init zsh)"
+eval &quot;$(starship init zsh)&quot;
 
 # zoxide：智能目录跳转
 # ⚠️ 不要加 --cmd cd！默认会创建 z 和 zi 命令
 # 如果加了 --cmd cd，zoxide 只会接管 cd，不会创建 z
-eval "$(zoxide init zsh)"
+eval &quot;$(zoxide init zsh)&quot;
 
 # fzf：模糊查找
-source &lt;(fzf --zsh)</code></pre>
-        </div>
+source &lt;(fzf --zsh)
+</code></pre>
+<h3>5.2 <code>~/.config/starship.toml</code></h3>
+<pre><code class="language-toml"># Starship 配置 - Catppuccin Mocha 配色
 
-        <h3>6.2 <code>~/.config/starship.toml</code></h3>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">toml</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># Starship 配置 - Catppuccin Mocha 配色
-
-format = """
+format = &quot;&quot;&quot;
 $directory$git_branch$git_status$nodejs$rust$golang$python
-$character"""
+$character&quot;&quot;&quot;
 
 [character]
-success_symbol = "[➜](#a6e3a1)"
-error_symbol = "[✗](#f38ba8)"
-vicmd_symbol = "[❮](#a6e3a1)"
+success_symbol = &quot;[➜](#a6e3a1)&quot;
+error_symbol = &quot;[✗](#f38ba8)&quot;
+vicmd_symbol = &quot;[❮](#a6e3a1)&quot;
 
 [directory]
 truncation_length = 3
-truncation_symbol = "…/"
-style = "bold #89b4fa"
+truncation_symbol = &quot;…/&quot;
+style = &quot;bold #89b4fa&quot;
 
 [git_branch]
-symbol = " "
-style = "bold #cba6f7"
-format = '[$symbol$branch]($style) '
+symbol = &quot; &quot;
+style = &quot;bold #cba6f7&quot;
+format = &#39;[$symbol$branch]($style) &#39;
 
 [git_status]
-style = "bold #fab387"
-format = '([$all_status$ahead_behind]($style) )'
+style = &quot;bold #fab387&quot;
+format = &#39;([$all_status$ahead_behind]($style) )&#39;
 
 [nodejs]
-symbol = " "
-style = "#a6e3a1"
-format = '[$symbol($version)]($style) '
+symbol = &quot; &quot;
+style = &quot;#a6e3a1&quot;
+format = &#39;[$symbol($version)]($style) &#39;
 
 [rust]
-symbol = " "
-style = "bold #f38ba8"
-format = '[$symbol($version)]($style) '
+symbol = &quot; &quot;
+style = &quot;bold #f38ba8&quot;
+format = &#39;[$symbol($version)]($style) &#39;
 
 [python]
-symbol = " "
-style = "#f9e2af"
-format = '[$symbol($version)]($style) '
+symbol = &quot; &quot;
+style = &quot;#f9e2af&quot;
+format = &#39;[$symbol($version)]($style) &#39;
 
 [golang]
-symbol = " "
-style = "#94e2d5"
-format = '[$symbol($version)]($style) '
+symbol = &quot; &quot;
+style = &quot;#94e2d5&quot;
+format = &#39;[$symbol($version)]($style) &#39;
 
 [cmd_duration]
 min_time = 2000
-format = '[$duration](bold #f9e2af) '
+format = &#39;[$duration](bold #f9e2af) &#39;
 
 [username]
-style_user = "bold #89b4fa"
-style_root = "bold #f38ba8"
-format = "[$user]($style) "
+style_user = &quot;bold #89b4fa&quot;
+style_root = &quot;bold #f38ba8&quot;
+format = &quot;[$user]($style) &quot;
 disabled = true
 show_always = false
 
 [hostname]
 ssh_only = true
-format = "[@$hostname](bold #f9e2af) "
-disabled = false</code></pre>
-        </div>
-
-        <h3>6.3 <code>~/.config/ghostty/config</code></h3>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">ini</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># Ghostty 配置
+format = &quot;[@$hostname](bold #f9e2af) &quot;
+disabled = false
+</code></pre>
+<h3>5.3 <code>~/.config/ghostty/config</code></h3>
+<pre><code class="language-ini"># Ghostty 配置
 
 # 主题
 theme = catppuccin-mocha
 
 # 字体（Mono 变体）
-font-family = "JetBrainsMono Nerd Font Mono"
+font-family = &quot;JetBrainsMono Nerd Font Mono&quot;
 font-size = 14
 
 # 窗口
@@ -967,170 +885,177 @@ cursor-text = #1e1e2e
 
 # 其他
 mouse-hide-while-typing = true
-confirm-close-surface = false</code></pre>
-        </div>
-      </section>
-
-      <section class="section" id="zoxide-fzf">
-        <div class="section-header">
-          <span class="section-number">07</span>
-          <h2>安装 zoxide 和 fzf（可选但强烈推荐）</h2>
-        </div>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>brew install zoxide fzf</code></pre>
-        </div>
-        <p>在 <code>~/.zshrc</code> 中添加初始化（放在 Starship 之后）：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># zoxide：智能目录跳转
+confirm-close-surface = false
+</code></pre>
+<hr>
+<h2>6. 安装 zoxide 和 fzf（可选但强烈推荐）</h2>
+<pre><code class="language-bash">brew install zoxide fzf
+</code></pre>
+<p>在 <code>~/.zshrc</code> 中添加初始化（放在 Starship 之后）：</p>
+<pre><code class="language-zsh"># zoxide：智能目录跳转
 # ⚠️ 默认参数会创建 z / zi 命令
 # 如果加 --cmd cd，zoxide 只会接管 cd，不会创建 z
-eval "$(zoxide init zsh)"
+eval &quot;$(zoxide init zsh)&quot;
 
 # fzf：模糊查找 + 快捷键
-source &lt;(fzf --zsh)</code></pre>
-        </div>
-
-        <h4>zoxide 用法</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>命令</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>z proj</code></td><td>跳转到历史中最匹配的 <code>*proj*</code> 目录</td></tr>
-              <tr><td><code>zi proj</code></td><td>交互式选择（多个匹配时弹出 fzf 列表）</td></tr>
-              <tr><td><code>zq proj</code></td><td>只查询会跳到哪，不实际跳转</td></tr>
-              <tr><td><code>z -</code></td><td>返回上一个目录</td></tr>
-              <tr><td><code>zoxide query -l</code></td><td>列出所有已记录的目录</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h4>fzf 快捷键</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>快捷键</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>Ctrl + R</code></td><td>模糊搜索历史命令</td></tr>
-              <tr><td><code>Ctrl + T</code></td><td>模糊搜索文件</td></tr>
-              <tr><td><code>Alt + C</code></td><td>模糊搜索目录并进入</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section" id="sdkman">
-        <div class="section-header">
-          <span class="section-number">08</span>
-          <h2>安装 SDKMAN!（Java 版本管理）</h2>
-        </div>
-        <p>macOS 自带 Bash 3.2，但 SDKMAN! 安装脚本要求 Bash 4+。使用 zsh 执行可跳过该检查：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>export https_proxy=http://localhost:7890
-curl -s "https://get.sdkman.io" | zsh</code></pre>
-        </div>
-        <p>安装完成后，SDKMAN! 会自动将初始化代码追加到 <code>~/.zshrc</code>（见 5.1 节配置）。</p>
-
-        <h4>安装 Java（最新 LTS）</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 安装默认推荐版本（当前为 Java 25 LTS）
+source &lt;(fzf --zsh)
+</code></pre>
+<h3>zoxide 用法</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>z proj</code></td>
+<td>跳转到历史中最匹配的 <code>*proj*</code> 目录</td>
+</tr>
+<tr>
+<td><code>zi proj</code></td>
+<td>交互式选择（多个匹配时弹出 fzf 列表）</td>
+</tr>
+<tr>
+<td><code>zq proj</code></td>
+<td>只查询会跳到哪，不实际跳转</td>
+</tr>
+<tr>
+<td><code>z -</code></td>
+<td>返回上一个目录</td>
+</tr>
+<tr>
+<td><code>zoxide query -l</code></td>
+<td>列出所有已记录的目录</td>
+</tr>
+</tbody></table>
+<h3>fzf 快捷键</h3>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ctrl + R</code></td>
+<td>模糊搜索历史命令</td>
+</tr>
+<tr>
+<td><code>Ctrl + T</code></td>
+<td>模糊搜索文件</td>
+</tr>
+<tr>
+<td><code>Alt + C</code></td>
+<td>模糊搜索目录并进入</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. 安装 SDKMAN!（Java 版本管理）</h2>
+<p>macOS 自带 Bash 3.2，但 SDKMAN! 安装脚本要求 Bash 4+。使用 zsh 执行可跳过该检查：</p>
+<pre><code class="language-bash">export https_proxy=http://localhost:7890
+curl -s &quot;https://get.sdkman.io&quot; | zsh
+</code></pre>
+<p>安装完成后，SDKMAN! 会自动将初始化代码追加到 <code>~/.zshrc</code>（见 5.1 节配置）。</p>
+<h3>安装 Java（最新 LTS）</h3>
+<pre><code class="language-bash"># 安装默认推荐版本（当前为 Java 25 LTS）
 sdk install java
 
 # 或指定版本
-sdk install java 25.0.3-tem</code></pre>
-        </div>
-        <div class="callout callout-warning">
-          <p><strong>注意</strong>：<code>sdk install java</code> 不带版本号时，SDKMAN! 会自动选择当前默认的 LTS 版本。由于 SDKMAN! 管理 <code>JAVA_HOME</code>，<strong>不要在 <code>~/.zshrc</code> 中手动设置 <code>JAVA_HOME</code></strong>，否则版本切换会失效。</p>
-        </div>
-
-        <h4>常用命令</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>命令</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>sdk current java</code></td><td>查看当前 Java 版本</td></tr>
-              <tr><td><code>sdk list java</code></td><td>查看所有可用 Java 版本</td></tr>
-              <tr><td><code>sdk use java 21.0.11-tem</code></td><td>当前终端临时切换版本</td></tr>
-              <tr><td><code>sdk default java 21.0.11-tem</code></td><td>设置默认版本</td></tr>
-              <tr><td><code>sdk install maven</code></td><td>安装 Maven</td></tr>
-              <tr><td><code>sdk install gradle</code></td><td>安装 Gradle</td></tr>
-              <tr><td><code>sdk selfupdate</code></td><td>更新 SDKMAN! 本身</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section" id="pm2">
-        <div class="section-header">
-          <span class="section-number">09</span>
-          <h2>安装 PM2（进程管理器）</h2>
-        </div>
-        <p>PM2 用于管理长期运行的后台进程（Node.js、Python、Shell 脚本等），并支持开机自动恢复。</p>
-
-        <h4>安装</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>npm install -g pm2</code></pre>
-        </div>
-        <p>验证安装：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>pm2 --version</code></pre>
-        </div>
-
-        <h4>配置开机自启</h4>
-        <p>PM2 通过 macOS <code>launchd</code> 实现登录后自动恢复已保存的进程。</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 生成并注册 launchd 服务
+sdk install java 25.0.3-tem
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：<code>sdk install java</code> 不带版本号时，SDKMAN! 会自动选择当前默认的 LTS 版本。由于 SDKMAN! 管理 <code>JAVA_HOME</code>，<strong>不要在 <code>~/.zshrc</code> 中手动设置 <code>JAVA_HOME</code></strong>，否则版本切换会失效。</p>
+</blockquote>
+<h3>常用命令</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sdk current java</code></td>
+<td>查看当前 Java 版本</td>
+</tr>
+<tr>
+<td><code>sdk list java</code></td>
+<td>查看所有可用 Java 版本</td>
+</tr>
+<tr>
+<td><code>sdk use java 21.0.11-tem</code></td>
+<td>当前终端临时切换版本</td>
+</tr>
+<tr>
+<td><code>sdk default java 21.0.11-tem</code></td>
+<td>设置默认版本</td>
+</tr>
+<tr>
+<td><code>sdk install maven</code></td>
+<td>安装 Maven</td>
+</tr>
+<tr>
+<td><code>sdk install gradle</code></td>
+<td>安装 Gradle</td>
+</tr>
+<tr>
+<td><code>sdk selfupdate</code></td>
+<td>更新 SDKMAN! 本身</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. 安装 PM2（进程管理器）</h2>
+<p>PM2 用于管理长期运行的后台进程（Node.js、Python、Shell 脚本等），并支持开机自动恢复。</p>
+<h3>安装</h3>
+<pre><code class="language-bash">npm install -g pm2
+</code></pre>
+<p>验证安装：</p>
+<pre><code class="language-bash">pm2 --version
+</code></pre>
+<h3>配置开机自启</h3>
+<p>PM2 通过 macOS <code>launchd</code> 实现登录后自动恢复已保存的进程。</p>
+<pre><code class="language-bash"># 生成并注册 launchd 服务
 pm2 startup launchd
 
 # 按提示执行输出的 sudo 命令，例如：
-# sudo env PATH=$PATH:/Users/yusizhen/.nvm/versions/node/v24.16.0/bin pm2 startup launchd -u yusizhen --hp /Users/yusizhen</code></pre>
-        </div>
-        <div class="callout callout-warning">
-          <p><strong>注意</strong>：<code>pm2 startup</code> 需要 sudo 权限，因为它要在 <code>/Library/LaunchDaemons</code> 或 <code>~/Library/LaunchAgents</code> 下创建 plist 文件。</p>
-        </div>
-
-        <h4>配置进程</h4>
-        <p>创建 <code>ecosystem.config.js</code>：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">js</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>module.exports = {
+# sudo env PATH=$PATH:/Users/yusizhen/.nvm/versions/node/v24.16.0/bin pm2 startup launchd -u yusizhen --hp /Users/yusizhen
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：<code>pm2 startup</code> 需要 sudo 权限，因为它要在 <code>/Library/LaunchDaemons</code> 或 <code>~/Library/LaunchAgents</code> 下创建 plist 文件。</p>
+</blockquote>
+<h3>配置进程</h3>
+<p>创建 <code>ecosystem.config.js</code>：</p>
+<pre><code class="language-js">module.exports = {
   apps: [
     {
-      name: 'api-server',
-      script: './services/api/server.js',
+      name: &#39;api-server&#39;,
+      script: &#39;./services/api/server.js&#39;,
       instances: 1,
       autorestart: true,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-      env: { NODE_ENV: 'production' }
+      log_date_format: &#39;YYYY-MM-DD HH:mm:ss Z&#39;,
+      env: { NODE_ENV: &#39;production&#39; }
     },
     {
-      name: 'data-processor',
-      script: './services/data/main.py',
-      interpreter: 'python3',
+      name: &#39;data-processor&#39;,
+      script: &#39;./services/data/main.py&#39;,
+      interpreter: &#39;python3&#39;,
       instances: 1,
       autorestart: true
     },
     {
-      name: 'backup-job',
-      script: './scripts/backup.sh',
-      interpreter: 'bash',
+      name: &#39;backup-job&#39;,
+      script: &#39;./scripts/backup.sh&#39;,
+      interpreter: &#39;bash&#39;,
       instances: 1,
-      cron_restart: '0 2 * * *',
+      cron_restart: &#39;0 2 * * *&#39;,
       autorestart: false
     }
   ]
-};</code></pre>
-        </div>
-
-        <h4>启动与保存</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 启动所有进程
+};
+</code></pre>
+<h3>启动与保存</h3>
+<pre><code class="language-bash"># 启动所有进程
 pm2 start ecosystem.config.js
 
 # 查看状态
@@ -1140,138 +1065,142 @@ pm2 status
 pm2 logs
 
 # 保存当前进程列表（关键！开机自启依赖此步骤）
-pm2 save</code></pre>
-        </div>
-        <div class="callout callout-danger">
-          <p><strong>⚠️ 重要</strong>：每次增删进程后，必须执行 <code>pm2 save</code>，否则重启后不会自动恢复新进程。</p>
-        </div>
-
-        <h4>常用命令</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>命令</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>pm2 start &lt;name&gt;</code></td><td>启动进程</td></tr>
-              <tr><td><code>pm2 stop all</code></td><td>停止全部进程</td></tr>
-              <tr><td><code>pm2 restart &lt;name&gt;</code></td><td>重启指定进程</td></tr>
-              <tr><td><code>pm2 delete &lt;name&gt;</code></td><td>删除进程</td></tr>
-              <tr><td><code>pm2 logs &lt;name&gt;</code></td><td>查看指定进程日志</td></tr>
-              <tr><td><code>pm2 monit</code></td><td>打开实时监控面板</td></tr>
-              <tr><td><code>pm2 save</code></td><td>保存进程列表（供开机恢复）</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section" id="gh">
-        <div class="section-header">
-          <span class="section-number">10</span>
-          <h2>安装 GitHub CLI (gh)</h2>
-        </div>
-        <p>用于在终端操作 GitHub（查看 issue、PR、star 列表等）。</p>
-
-        <h4>安装</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>brew install gh</code></pre>
-        </div>
-
-        <h4>登录</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>gh auth login</code></pre>
-        </div>
-        <p>按提示选择：</p>
-        <ul>
-          <li><strong>GitHub.com</strong> → <strong>HTTPS</strong> → <strong>Login with a web browser</strong></li>
-          <li>终端会显示一个 one-time code，打开浏览器访问 <code>https://github.com/login/device</code> 粘贴即可</li>
-        </ul>
-
-        <h4>常用命令</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>命令</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>gh repo view owner/repo</code></td><td>查看仓库信息</td></tr>
-              <tr><td><code>gh api user/starred --paginate</code></td><td>查看自己的 star 列表</td></tr>
-              <tr><td><code>gh release list --repo owner/repo</code></td><td>查看 release</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section" id="mdr">
-        <div class="section-header">
-          <span class="section-number">11</span>
-          <h2>安装 markdown-reader</h2>
-        </div>
-        <p>TUI Markdown 文件浏览器和阅读器，支持 Mermaid 图表、LaTeX 数学公式、实时编辑等。</p>
-        <blockquote>
-          <p>项目：<a href="https://github.com/leboiko/markdown-reader" target="_blank">leboiko/markdown-reader</a><br>
-          二进制名：<code>markdown-reader</code><br>
-          crates.io 包名：<code>markdown-tui-explorer</code></p>
-        </blockquote>
-
-        <h4>安装（Homebrew）</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 添加 tap 后安装（国内网络建议开代理）
+pm2 save
+</code></pre>
+<blockquote>
+<p><strong>⚠️ 重要</strong>：每次增删进程后，必须执行 <code>pm2 save</code>，否则重启后不会自动恢复新进程。</p>
+</blockquote>
+<h3>常用命令</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pm2 start &lt;name&gt;</code></td>
+<td>启动进程</td>
+</tr>
+<tr>
+<td><code>pm2 stop all</code></td>
+<td>停止全部进程</td>
+</tr>
+<tr>
+<td><code>pm2 restart &lt;name&gt;</code></td>
+<td>重启指定进程</td>
+</tr>
+<tr>
+<td><code>pm2 delete &lt;name&gt;</code></td>
+<td>删除进程</td>
+</tr>
+<tr>
+<td><code>pm2 logs &lt;name&gt;</code></td>
+<td>查看指定进程日志</td>
+</tr>
+<tr>
+<td><code>pm2 monit</code></td>
+<td>打开实时监控面板</td>
+</tr>
+<tr>
+<td><code>pm2 save</code></td>
+<td>保存进程列表（供开机恢复）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. 安装 GitHub CLI (gh)</h2>
+<p>用于在终端操作 GitHub（查看 issue、PR、star 列表等）。</p>
+<h3>安装</h3>
+<pre><code class="language-bash">brew install gh
+</code></pre>
+<h3>登录</h3>
+<pre><code class="language-bash">gh auth login
+</code></pre>
+<p>按提示选择：</p>
+<ul>
+<li><strong>GitHub.com</strong> → <strong>HTTPS</strong> → <strong>Login with a web browser</strong></li>
+<li>终端会显示一个 one-time code，打开浏览器访问 <code>https://github.com/login/device</code> 粘贴即可</li>
+</ul>
+<h3>常用命令</h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gh repo view owner/repo</code></td>
+<td>查看仓库信息</td>
+</tr>
+<tr>
+<td><code>gh api user/starred --paginate</code></td>
+<td>查看自己的 star 列表</td>
+</tr>
+<tr>
+<td><code>gh release list --repo owner/repo</code></td>
+<td>查看 release</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>10. 安装 markdown-reader</h2>
+<p>TUI Markdown 文件浏览器和阅读器，支持 Mermaid 图表、LaTeX 数学公式、实时编辑等。</p>
+<blockquote>
+<p>项目：<a href="https://github.com/leboiko/markdown-reader">leboiko/markdown-reader</a><br>二进制名：<code>markdown-reader</code><br>crates.io 包名：<code>markdown-tui-explorer</code></p>
+</blockquote>
+<h3>安装（Homebrew）</h3>
+<pre><code class="language-bash"># 添加 tap 后安装（国内网络建议开代理）
 ALL_PROXY=http://localhost:7890 brew tap leboiko/tap
-ALL_PROXY=http://localhost:7890 brew install markdown-reader</code></pre>
-        </div>
-
-        <h4>使用</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 浏览当前目录的 markdown 文件
+ALL_PROXY=http://localhost:7890 brew install markdown-reader
+</code></pre>
+<h3>使用</h3>
+<pre><code class="language-bash"># 浏览当前目录的 markdown 文件
 markdown-reader .
 
 # 打开单个文件
-markdown-reader README.md</code></pre>
-        </div>
-
-        <h4>快捷键</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>按键</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>o</code></td><td>大纲导航</td></tr>
-              <tr><td><code>i</code></td><td>混合编辑模式（光标所在块显示 raw markdown）</td></tr>
-              <tr><td><code>c</code></td><td>设置面板（主题、字体等）</td></tr>
-              <tr><td><code>/</code></td><td>全局搜索</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h4>设置别名</h4>
-        <p>在 <code>~/.zshrc</code> 中添加：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>alias mdr="markdown-reader"</code></pre>
-        </div>
-        <p>之后可用 <code>mdr .</code> 或 <code>mdr README.md</code>。</p>
-      </section>
-
-      <section class="section" id="glow">
-        <div class="section-header">
-          <span class="section-number">12</span>
-          <h2>安装 Glow</h2>
-        </div>
-        <p>终端 Markdown 渲染器，基于 Charmbracelet 的 TUI 框架。相比 <code>markdown-reader</code> 更轻量，适合日常快速阅读 Markdown 文件。</p>
-        <blockquote>
-          <p>项目：<a href="https://github.com/charmbracelet/glow" target="_blank">charmbracelet/glow</a></p>
-        </blockquote>
-
-        <h4>安装（Homebrew）</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code>brew install glow</code></pre>
-        </div>
-
-        <h4>用法</h4>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># TUI 浏览当前目录所有 markdown（推荐）
+markdown-reader README.md
+</code></pre>
+<h3>快捷键</h3>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>o</code></td>
+<td>大纲导航</td>
+</tr>
+<tr>
+<td><code>i</code></td>
+<td>混合编辑模式（光标所在块显示 raw markdown）</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td>设置面板（主题、字体等）</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>全局搜索</td>
+</tr>
+</tbody></table>
+<h3>设置别名</h3>
+<p>在 <code>~/.zshrc</code> 中添加：</p>
+<pre><code class="language-zsh">alias mdr=&quot;markdown-reader&quot;
+</code></pre>
+<p>之后可用 <code>mdr .</code> 或 <code>mdr README.md</code>。</p>
+<hr>
+<h2>11. 安装 Glow</h2>
+<p>终端 Markdown 渲染器，基于 Charmbracelet 的 TUI 框架。相比 <code>markdown-reader</code> 更轻量，适合日常快速阅读 Markdown 文件。</p>
+<blockquote>
+<p>项目：<a href="https://github.com/charmbracelet/glow">charmbracelet/glow</a></p>
+</blockquote>
+<h3>安装（Homebrew）</h3>
+<pre><code class="language-bash">brew install glow
+</code></pre>
+<h3>用法</h3>
+<pre><code class="language-bash"># TUI 浏览当前目录所有 markdown（推荐）
 glow -t .
 
 # 直接打开单个文件
@@ -1281,226 +1210,266 @@ glow -t README.md
 glow -t -w 80 README.md
 
 # 带行号
-glow -t -l README.md</code></pre>
-        </div>
-        <div class="callout callout-warning">
-          <p><strong>注意</strong>：<code>-t</code>（TUI 模式）是推荐用法。它使用内置渲染引擎，自动分页且无乱码。不使用 <code>-t</code> 时 glow 会调用系统 <code>$PAGER</code>（如 <code>less</code>），在 Ghostty 下可能出现样式乱码。</p>
-        </div>
-
-        <h4>配置别名</h4>
-        <p>在 <code>~/.zshrc</code> 中添加：</p>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># glow: Markdown TUI 阅读器
-unalias md 2>/dev/null || true
+glow -t -l README.md
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：<code>-t</code>（TUI 模式）是推荐用法。它使用内置渲染引擎，自动分页且无乱码。不使用 <code>-t</code> 时 glow 会调用系统 <code>$PAGER</code>（如 <code>less</code>），在 Ghostty 下可能出现样式乱码。</p>
+</blockquote>
+<h3>配置别名</h3>
+<p>在 <code>~/.zshrc</code> 中添加：</p>
+<pre><code class="language-zsh"># glow: Markdown TUI 阅读器
+unalias md 2&gt;/dev/null || true
 md() {
-  if [[ -f "$1" ]]; then
-    glow -t "$1"
-  elif [[ -d "$1" ]]; then
-    glow -t "$1"
+  if [[ -f &quot;$1&quot; ]]; then
+    glow -t &quot;$1&quot;
+  elif [[ -d &quot;$1&quot; ]]; then
+    glow -t &quot;$1&quot;
   else
     glow -t .
   fi
-}</code></pre>
-        </div>
-        <p><code>unalias md</code> 是为了覆盖 Oh My Zsh 某些插件预定义的 <code>md='mkdir -p'</code> alias。</p>
-        <p>之后可用：</p>
-        <ul>
-          <li><code>md</code> — 浏览当前目录所有 markdown</li>
-          <li><code>md README.md</code> — 直接打开文件</li>
-          <li><code>md ~/docs</code> — 浏览指定目录</li>
-        </ul>
+}
+</code></pre>
+<blockquote>
+<p><code>unalias md</code> 是为了覆盖 Oh My Zsh 某些插件预定义的 <code>md=&#39;mkdir -p&#39;</code> alias。</p>
+</blockquote>
+<p>之后可用：</p>
+<ul>
+<li><code>md</code> — 浏览当前目录所有 markdown</li>
+<li><code>md README.md</code> — 直接打开文件</li>
+<li><code>md ~/docs</code> — 浏览指定目录</li>
+</ul>
+<h3>TUI 快捷键</h3>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>↑</code>/<code>↓</code> 或 <code>j</code>/<code>k</code></td>
+<td>滚动</td>
+</tr>
+<tr>
+<td><code>PgUp</code>/<code>PgDn</code> 或 <code>b</code>/<code>f</code></td>
+<td>翻页</td>
+</tr>
+<tr>
+<td><code>g</code> / <code>G</code></td>
+<td>跳到开头 / 结尾</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>搜索文档内容</td>
+</tr>
+<tr>
+<td><code>←</code>/<code>→</code></td>
+<td>文件列表 ↔ 预览切换</td>
+</tr>
+<tr>
+<td><code>q</code> / <code>Esc</code></td>
+<td>退出</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>12. 安装 bat</h2>
+<p><code>cat</code> 的替代品，支持语法高亮、Git 集成、自动分页。</p>
+<blockquote>
+<p>项目：<a href="https://github.com/sharkdp/bat">sharkdp/bat</a></p>
+</blockquote>
+<h3>安装</h3>
+<pre><code class="language-bash">brew install bat
+</code></pre>
+<h3>基础用法</h3>
+<pre><code class="language-bash"># 替代 cat，带语法高亮
+bat file.py
 
-        <h4>TUI 快捷键</h4>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>按键</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><code>↑</code>/<code>↓</code> 或 <code>j</code>/<code>k</code></td><td>滚动</td></tr>
-              <tr><td><code>PgUp</code>/<code>PgDn</code> 或 <code>b</code>/<code>f</code></td><td>翻页</td></tr>
-              <tr><td><code>g</code> / <code>G</code></td><td>跳到开头 / 结尾</td></tr>
-              <tr><td><code>/</code></td><td>搜索文档内容</td></tr>
-              <tr><td><code>←</code>/<code>→</code></td><td>文件列表 ↔ 预览切换</td></tr>
-              <tr><td><code>q</code> / <code>Esc</code></td><td>退出</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+# 查看多个文件（带文件名标题）
+bat file1.js file2.js
 
-      <section class="section" id="apply">
-        <div class="section-header">
-          <span class="section-number">13</span>
-          <h2>生效</h2>
-        </div>
-        <ol class="step-list">
-          <li><strong>完全退出 Ghostty</strong>（Cmd + Q）</li>
-          <li><strong>重新打开 Ghostty</strong></li>
-          <li>检查提示符是否正常显示</li>
-        </ol>
-        <div class="code-block-wrapper">
-          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-          <pre><code># 验证 Starship
+# 只查看指定行范围
+bat --line-range 10:20 file.log
+
+# 显示不可见字符
+bat -A file.txt
+</code></pre>
+<h3>关于分页</h3>
+<p>bat 本身不内嵌分页器，但会自动调用系统的 <code>less</code>（macOS 自带 <code>/usr/bin/less</code>）。输出能 fit 在一屏内时自动退出，超出时进入分页模式。</p>
+<pre><code class="language-bash"># 禁用分页直接输出（适合管道）
+bat --paging=never file.txt | grep &quot;error&quot;
+</code></pre>
+<h3>配置别名</h3>
+<p>在 <code>~/.zshrc</code> 中添加：</p>
+<pre><code class="language-zsh"># 替代 cat（保留原 cat 可用）
+alias cat=&#39;bat --paging=never&#39;
+</code></pre>
+<hr>
+<h2>13. 安装 codegraph</h2>
+<p>本地代码智能索引工具，为 AI Agent 提供代码库的符号搜索、调用关系、影响分析等能力。</p>
+<blockquote>
+<p>项目：<a href="https://github.com/colbymchenry/codegraph">colbymchenry/codegraph</a></p>
+</blockquote>
+<h3>安装</h3>
+<pre><code class="language-bash">npm install -g @colbymchenry/codegraph
+</code></pre>
+<p>验证安装：</p>
+<pre><code class="language-bash">codegraph --version
+</code></pre>
+<h3>初始化项目</h3>
+<p>进入项目目录后执行：</p>
+<pre><code class="language-bash"># 初始化并建立索引
+codegraph init -i
+
+# 或先初始化，再手动索引
+codegraph init
+codegraph index
+</code></pre>
+<p>索引完成后，codegraph 会在后台监听文件变更并自动同步。</p>
+<h3>常用 Alias</h3>
+<p>在 <code>~/.zshrc</code> 中添加：</p>
+<pre><code class="language-zsh">source ~/.config/zsh/codegraph-aliases.zsh
+</code></pre>
+<p><code>~/.config/zsh/codegraph-aliases.zsh</code> 内容参考：</p>
+<pre><code class="language-zsh">alias cg=&#39;codegraph&#39;
+alias cg-idx=&#39;codegraph index&#39;
+alias cg-s=&#39;codegraph sync&#39;
+alias cg-st=&#39;codegraph status&#39;
+alias cg-c=&#39;codegraph context&#39;
+alias cg-tr=&#39;codegraph trace&#39;
+alias cg-ca=&#39;codegraph callers&#39;
+alias cg-ce=&#39;codegraph callees&#39;
+alias cg-im=&#39;codegraph impact&#39;
+alias cg-serve=&#39;codegraph serve --mcp&#39;
+alias cg-h=&#39;glow ~/.config/zsh/codegraph-help.md 2&gt;/dev/null || cat ~/.config/zsh/codegraph-help.md&#39;
+</code></pre>
+<h3>MCP 服务</h3>
+<p>codegraph 支持以 MCP 服务器模式运行，供 Claude 等 AI 工具调用：</p>
+<pre><code class="language-bash"># 启动 MCP 服务
+codegraph serve --mcp
+
+# 或使用 alias
+cg-serve
+</code></pre>
+<hr>
+<h2>14. 生效</h2>
+<ol>
+<li><strong>完全退出 Ghostty</strong>（Cmd + Q）</li>
+<li><strong>重新打开 Ghostty</strong></li>
+<li>检查提示符是否正常显示</li>
+</ol>
+<pre><code class="language-bash"># 验证 Starship
 starship --version
 
 # 验证字体（应显示图标而非方块）
-echo "    "</code></pre>
-        </div>
-      </section>
+echo &quot;    &quot;
 
-      <section class="section" id="faq">
-        <div class="section-header">
-          <span class="section-number small">Q&amp;A</span>
-          <h2>常见问题</h2>
-        </div>
+# 验证 bat
+bat --version
 
-        <div class="faq-item">
-          <div class="faq-question">Q: 提示符显示方块或问号？</div>
-          <div class="faq-answer">
-            <p>A: Nerd Font 未正确安装。检查 Ghostty 配置的 <code>font-family</code> 是否匹配实际字体族名。</p>
-            <div class="code-block-wrapper">
-              <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-              <pre><code># 查看已安装字体
-ls ~/Library/Fonts/ | grep -i jetbrains</code></pre>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">Q: Starship 配置报错 TOML parse error？</div>
-          <div class="faq-answer">
-            <p>A: 格式字符串中使用了双引号 <code>"</code> 但包含 <code>\[</code> 转义。改用单引号 <code>'</code> 包裹含转义的字符串。</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">Q: zoxide / fzf 命令找不到？</div>
-          <div class="faq-answer">
-            <p>A: 检查两点：</p>
-            <ol>
-              <li><strong><code>~/.zshrc</code> 开头必须有 Homebrew 初始化</strong>，因为 macOS 终端默认不加载 <code>~/.zprofile</code>：
-                <div class="code-block-wrapper">
-                  <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-                  <pre><code>eval "$(/opt/homebrew/bin/brew shellenv zsh)"</code></pre>
-                </div>
-              </li>
-              <li><strong>zoxide 不要加 <code>--cmd cd</code></strong>，否则不会创建 <code>z</code> 命令：
-                <div class="code-block-wrapper">
-                  <div class="code-header"><span class="code-lang">zsh</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-                  <pre><code># ✅ 正确
-eval "$(zoxide init zsh)"
+# 验证 codegraph
+codegraph --version
+</code></pre>
+<hr>
+<h2>常见问题</h2>
+<h3>Q: 提示符显示方块或问号？</h3>
+<p>A: Nerd Font 未正确安装。检查 Ghostty 配置的 <code>font-family</code> 是否匹配实际字体族名。</p>
+<pre><code class="language-bash"># 查看已安装字体
+ls ~/Library/Fonts/ | grep -i jetbrains
+</code></pre>
+<h3>Q: Starship 配置报错 TOML parse error？</h3>
+<p>A: 格式字符串中使用了双引号 <code>&quot;</code> 但包含 <code>\[</code> 转义。改用单引号 <code>&#39;</code> 包裹含转义的字符串。</p>
+<h3>Q: zoxide / fzf 命令找不到？</h3>
+<p>A: 检查两点：</p>
+<ol>
+<li><p><strong><code>~/.zshrc</code> 开头必须有 Homebrew 初始化</strong>，因为 macOS 终端默认不加载 <code>~/.zprofile</code>：</p>
+<pre><code class="language-zsh">eval &quot;$(/opt/homebrew/bin/brew shellenv zsh)&quot;
+</code></pre>
+</li>
+<li><p><strong>zoxide 不要加 <code>--cmd cd</code></strong>，否则不会创建 <code>z</code> 命令：</p>
+<pre><code class="language-zsh"># ✅ 正确
+eval &quot;$(zoxide init zsh)&quot;
 
 # ❌ 错误（只有 cd / cdi，没有 z / zi）
-eval "$(zoxide init zsh --cmd cd)"</code></pre>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">Q: 之前装过 Powerlevel10k，如何彻底清理？</div>
-          <div class="faq-answer">
-            <div class="code-block-wrapper">
-              <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
-              <pre><code>rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
+eval &quot;$(zoxide init zsh --cmd cd)&quot;
+</code></pre>
+</li>
+</ol>
+<h3>Q: 之前装过 Powerlevel10k，如何彻底清理？</h3>
+<pre><code class="language-bash">rm -rf ~/.oh-my-zsh/custom/themes/powerlevel10k
 rm -f ~/.p10k.zsh
 rm -rf ~/.cache/p10k*
-rm -f ~/.zcompdump*</code></pre>
-            </div>
-            <p>然后在 <code>~/.zshrc</code> 中删除所有含 <code>p10k</code> 或 <code>powerlevel10k</code> 的行。</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="components">
-        <div class="section-header">
-          <span class="section-number small">REF</span>
-          <h2>组件说明</h2>
-        </div>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>组件</th><th>作用</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Ghostty</strong></td><td>终端模拟器，GPU 加速，原生 macOS 应用</td></tr>
-              <tr><td><strong>Oh My Zsh</strong></td><td>zsh 插件框架，管理插件和补全</td></tr>
-              <tr><td><strong>Starship</strong></td><td>命令提示符主题，Rust 编写，跨 Shell</td></tr>
-              <tr><td><strong>JetBrainsMono Nerd Font</strong></td><td>等宽编程字体，含图标字形</td></tr>
-              <tr><td><strong>Homebrew</strong></td><td>macOS 包管理器</td></tr>
-              <tr><td><strong>zoxide</strong></td><td>智能目录跳转，替代 <code>cd</code></td></tr>
-              <tr><td><strong>fzf</strong></td><td>模糊查找工具</td></tr>
-              <tr><td><strong>Catppuccin Mocha</strong></td><td>暗色配色方案，低饱和度护眼</td></tr>
-              <tr><td><strong>SDKMAN!</strong></td><td>Java/JVM 工具链版本管理器（Java、Maven、Gradle 等）</td></tr>
-              <tr><td><strong>PM2</strong></td><td>Node.js 进程管理器，支持开机自启、日志管理、进程监控</td></tr>
-              <tr><td><strong>GitHub CLI</strong></td><td>终端操作 GitHub（issue、PR、star、release 等）</td></tr>
-              <tr><td><strong>Glow</strong></td><td>轻量终端 Markdown 渲染器，TUI 浏览，自动分页</td></tr>
-              <tr><td><strong>markdown-reader</strong></td><td>TUI Markdown 文件浏览器，支持 Mermaid/LaTeX/实时编辑</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <footer class="page-footer">
-        <div class="prompt-line">
-          <span class="prompt-user">user</span><span>@</span><span class="prompt-host">macbook</span><span>:</span><span class="prompt-path">~/mac_ins</span><span class="prompt-symbol">$</span>
-          <span style="color:var(--accent-green)">exit</span>
-        </div>
-        <p style="margin-top:8px">macOS Terminal Setup Guide &middot; 2026-05-29</p>
-      </footer>
-    </main>
-  </div>
-
-  <script>
-    // Mobile sidebar toggle
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.querySelector('.sidebar-overlay').classList.toggle('open');
-    }
-
-    // Copy to clipboard
-    async function copyCode(btn) {
-      const code = btn.closest('.code-block-wrapper').querySelector('pre code').textContent;
-      try {
-        await navigator.clipboard.writeText(code);
-        const original = btn.innerHTML;
-        btn.classList.add('copied');
-        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = original;
-        }, 2000);
-      } catch (err) {
-        console.error('Copy failed:', err);
-      }
-    }
-
-    // Active nav link on scroll
-    const sections = document.querySelectorAll('.section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    function updateActiveNav() {
-      let current = '';
-      sections.forEach(section => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= 120) {
-          current = section.getAttribute('id');
-        }
-      });
-      navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-      });
-    }
-
-    window.addEventListener('scroll', updateActiveNav, { passive: true });
-    updateActiveNav();
-
-    // Close mobile sidebar on nav click
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 900) {
-          toggleSidebar();
-        }
-      });
-    });
-  </script>
+rm -f ~/.zcompdump*
+</code></pre>
+<p>然后在 <code>~/.zshrc</code> 中删除所有含 <code>p10k</code> 或 <code>powerlevel10k</code> 的行。</p>
+<hr>
+<h2>组件说明</h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ghostty</strong></td>
+<td>终端模拟器，GPU 加速，原生 macOS 应用</td>
+</tr>
+<tr>
+<td><strong>Oh My Zsh</strong></td>
+<td>zsh 插件框架，管理插件和补全</td>
+</tr>
+<tr>
+<td><strong>Starship</strong></td>
+<td>命令提示符主题，Rust 编写，跨 Shell</td>
+</tr>
+<tr>
+<td><strong>JetBrainsMono Nerd Font</strong></td>
+<td>等宽编程字体，含图标字形</td>
+</tr>
+<tr>
+<td><strong>Homebrew</strong></td>
+<td>macOS 包管理器</td>
+</tr>
+<tr>
+<td><strong>zoxide</strong></td>
+<td>智能目录跳转，替代 <code>cd</code></td>
+</tr>
+<tr>
+<td><strong>fzf</strong></td>
+<td>模糊查找工具</td>
+</tr>
+<tr>
+<td><strong>Catppuccin Mocha</strong></td>
+<td>暗色配色方案，低饱和度护眼</td>
+</tr>
+<tr>
+<td><strong>SDKMAN!</strong></td>
+<td>Java/JVM 工具链版本管理器（Java、Maven、Gradle 等）</td>
+</tr>
+<tr>
+<td><strong>PM2</strong></td>
+<td>Node.js 进程管理器，支持开机自启、日志管理、进程监控</td>
+</tr>
+<tr>
+<td><strong>GitHub CLI</strong></td>
+<td>终端操作 GitHub（issue、PR、star、release 等）</td>
+</tr>
+<tr>
+<td><strong>Glow</strong></td>
+<td>轻量终端 Markdown 渲染器，TUI 浏览，自动分页</td>
+</tr>
+<tr>
+<td><strong>bat</strong></td>
+<td><code>cat</code> 替代品，语法高亮、Git 集成、自动分页</td>
+</tr>
+<tr>
+<td><strong>codegraph</strong></td>
+<td>本地代码智能索引，为 AI Agent 提供符号搜索和调用分析</td>
+</tr>
+<tr>
+<td><strong>markdown-reader</strong></td>
+<td>TUI Markdown 文件浏览器，支持 Mermaid/LaTeX/实时编辑</td>
+</tr>
+</tbody></table>
 </body>
 </html>
