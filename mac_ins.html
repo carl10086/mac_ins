@@ -1108,6 +1108,39 @@ pm2 save
 </tr>
 </tbody></table>
 <hr>
+<h2>8.5 安装 subconverter（订阅转换器，可选）</h2>
+<blockquote>
+<p>项目：<a href="https://github.com/tindy2013/subconverter">tindy2013/subconverter</a><br>用途：把机场订阅统一转为 Clash / Surge / Sing-box 等客户端格式，本地 HTTP 服务。</p>
+</blockquote>
+<blockquote>
+<p>⚠️ 选配项。订阅 URL / 节点过滤 / 规则集需按实际机场调整。</p>
+</blockquote>
+<pre><code class="language-bash"># 依赖：cmake / yaml-cpp / libevent / rapidjson / pcre2 / toml11 / quickjs（brew install）
+# date 与 LibCron 需源码安装到 ~/.local
+
+cd &lt;PROJECT_DIR&gt; &amp;&amp; mkdir build &amp;&amp; cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="$HOME/.local;/opt/homebrew" \
+  -DLIBCRON_INCLUDE_DIRS=$HOME/.local/include \
+  -DLIBCRON_LIBRARIES=$HOME/.local/lib/liblibcron.a
+cmake --build . -j$(sysctl -n hw.ncpu)
+
+# 编译时若报 JS_SetHostUnhandledPromiseRejectionTracker 未定义，
+# 在 include/quickjspp.hpp 中将其重命名为 JS_SetHostPromiseRejectionTracker
+</code></pre>
+<h3>配置 pref.ini</h3>
+<pre><code class="language-bash">cp base/pref.example.ini pref.ini
+</code></pre>
+<p>关键修改：</p>
+<ul>
+<li><code>default_url=&lt;YOUR_SUBSCRIPTION_URL&gt;</code>（URL 编码后填入）</li>
+<li><code>!!import:snippets/...</code> 全部改为 <code>!!import:base/snippets/...</code>（cwd 是项目根，snippets 实际在 <code>base/snippets/</code>）</li>
+</ul>
+<h3>验证</h3>
+<pre><code class="language-bash">curl -s "http://127.0.0.1:25500/sub?target=clash" | head -20
+</code></pre>
+<p>期望输出包含 <code>proxies:</code> / <code>proxy-groups:</code> / <code>rules:</code> 三段。<code>default_url</code> 不生效时，用 <code>-f &lt;绝对路径&gt;</code> 显式指定 pref.ini。</p>
+<hr>
 <h2>9. 安装 GitHub CLI (gh)</h2>
 <p>用于在终端操作 GitHub（查看 issue、PR、star 列表等）。</p>
 <h3>安装</h3>
@@ -1469,6 +1502,10 @@ rm -f ~/.zcompdump*
 <tr>
 <td><strong>markdown-reader</strong></td>
 <td>TUI Markdown 文件浏览器，支持 Mermaid/LaTeX/实时编辑</td>
+</tr>
+<tr>
+<td><strong>subconverter</strong></td>
+<td>订阅转换器 C++ 服务，把机场订阅统一转 Clash/Surge/Sing-box 等格式，PM2 守护</td>
 </tr>
 </tbody></table>
 </body>
