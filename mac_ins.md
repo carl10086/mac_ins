@@ -452,6 +452,48 @@ curl -s "http://127.0.0.1:25500/sub?target=clash" | head -20
 
 ---
 
+## 8.6 Git SSH 代理配置（SOCKS5）
+
+macOS 自带的 `nc` 不支持 SOCKS5 代理，因此需要安装 `connect` 作为 `ProxyCommand`，让 Git SSH 流量走本地代理。
+
+### 安装 connect
+
+```bash
+brew install connect
+```
+
+### 配置 `~/.ssh/config`
+
+```ssh-config
+# GitHub SSH 走代理 (SOCKS5)
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+    ProxyCommand /opt/homebrew/bin/connect -S localhost:7890 %h %p
+```
+
+> **说明**：
+> - `HostName ssh.github.com` + `Port 443`：GitHub 提供的 SSH over HTTPS 方案，用于标准 22 端口被封锁的环境
+> - `/opt/homebrew/bin/connect`：brew 安装路径（Intel Mac 为 `/usr/local/bin/connect`）
+> - `-S localhost:7890`：通过 SOCKS5 代理连接（这里假设代理软件监听 7890 端口）
+
+### 验证
+
+```bash
+ssh -T git@github.com
+```
+
+期望输出（exit code 为 1 属正常现象）：
+
+```
+Hi <username>! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+---
+
 ## 9. 安装 GitHub CLI (gh)
 
 用于在终端操作 GitHub（查看 issue、PR、star 列表等）。
@@ -716,7 +758,45 @@ cg-serve
 
 ---
 
-## 14. 生效
+## 14. 安装 btop
+
+终端系统资源监控工具，一个窗口同时看清 CPU、内存、网络、磁盘和进程，支持鼠标操作和主题换肤。
+
+> 项目：[aristocratos/btop](https://github.com/aristocratos/btop)
+>
+> 用法速查：[btop-recipe.md](btop-recipe.md)
+
+### 安装
+
+```bash
+brew install btop
+```
+
+验证安装：
+
+```bash
+btop --version
+```
+
+### 基础用法
+
+```bash
+# 启动监控
+btop
+
+# 指定更新频率（毫秒）
+btop -u 1000
+
+# 启动时过滤进程
+btop -f node
+
+# 启动时加载指定预设布局
+btop -p 2
+```
+
+---
+
+## 15. 生效
 
 1. **完全退出 Ghostty**（Cmd + Q）
 2. **重新打开 Ghostty**
@@ -734,6 +814,9 @@ bat --version
 
 # 验证 codegraph
 codegraph --version
+
+# 验证 btop
+btop --version
 ```
 
 ---

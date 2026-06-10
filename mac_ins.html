@@ -1141,6 +1141,36 @@ cmake --build . -j$(sysctl -n hw.ncpu)
 </code></pre>
 <p>期望输出包含 <code>proxies:</code> / <code>proxy-groups:</code> / <code>rules:</code> 三段。<code>default_url</code> 不生效时，用 <code>-f &lt;绝对路径&gt;</code> 显式指定 pref.ini。</p>
 <hr>
+<h2>8.6 Git SSH 代理配置（SOCKS5）</h2>
+<p>macOS 自带的 <code>nc</code> 不支持 SOCKS5 代理，因此需要安装 <code>connect</code> 作为 <code>ProxyCommand</code>，让 Git SSH 流量走本地代理。</p>
+<h3>安装 connect</h3>
+<pre><code class="language-bash">brew install connect
+</code></pre>
+<h3>配置 <code>~/.ssh/config</code></h3>
+<pre><code class="language-ssh-config"># GitHub SSH 走代理 (SOCKS5)
+Host github.com
+    HostName ssh.github.com
+    Port 443
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+    ProxyCommand /opt/homebrew/bin/connect -S localhost:7890 %h %p
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：</p>
+<ul>
+<li><code>HostName ssh.github.com</code> + <code>Port 443</code>：GitHub 提供的 SSH over HTTPS 方案，用于标准 22 端口被封锁的环境</li>
+<li><code>/opt/homebrew/bin/connect</code>：brew 安装路径（Intel Mac 为 <code>/usr/local/bin/connect</code>）</li>
+<li><code>-S localhost:7890</code>：通过 SOCKS5 代理连接（这里假设代理软件监听 7890 端口）</li>
+</ul>
+</blockquote>
+<h3>验证</h3>
+<pre><code class="language-bash">ssh -T git@github.com
+</code></pre>
+<p>期望输出（exit code 为 1 属正常现象）：</p>
+<pre><code>Hi &lt;username&gt;! You've successfully authenticated, but GitHub does not provide shell access.
+</code></pre>
+<hr>
 <h2>9. 安装 GitHub CLI (gh)</h2>
 <p>用于在终端操作 GitHub（查看 issue、PR、star 列表等）。</p>
 <h3>安装</h3>
@@ -1383,8 +1413,33 @@ codegraph serve --mcp
 # 或使用 alias
 cg-serve
 </code></pre>
+<h2>14. 安装 btop</h2>
+<p>终端系统资源监控工具，一个窗口同时看清 CPU、内存、网络、磁盘和进程，支持鼠标操作和主题换肤。</p>
+<blockquote>
+<p>项目：<a href="https://github.com/aristocratos/btop">aristocratos/btop</a><br>
+用法速查：<a href="btop-recipe.md">btop-recipe.md</a></p>
+</blockquote>
+<h3>安装</h3>
+<pre><code class="language-bash">brew install btop
+</code></pre>
+<p>验证安装：</p>
+<pre><code class="language-bash">btop --version
+</code></pre>
+<h3>基础用法</h3>
+<pre><code class="language-bash"># 启动监控
+btop
+
+# 指定更新频率（毫秒）
+btop -u 1000
+
+# 启动时过滤进程
+btop -f node
+
+# 启动时加载指定预设布局
+btop -p 2
+</code></pre>
 <hr>
-<h2>14. 生效</h2>
+<h2>15. 生效</h2>
 <ol>
 <li><strong>完全退出 Ghostty</strong>（Cmd + Q）</li>
 <li><strong>重新打开 Ghostty</strong></li>
@@ -1401,6 +1456,9 @@ bat --version
 
 # 验证 codegraph
 codegraph --version
+
+# 验证 btop
+btop --version
 </code></pre>
 <hr>
 <h2>常见问题</h2>
@@ -1482,6 +1540,10 @@ rm -f ~/.zcompdump*
 <tr>
 <td><strong>PM2</strong></td>
 <td>Node.js 进程管理器，支持开机自启、日志管理、进程监控</td>
+</tr>
+<tr>
+<td><strong>connect</strong></td>
+<td>SOCKS5 代理工具，为 Git SSH 提供 <code>ProxyCommand</code> 支持（macOS 自带 nc 不支持 SOCKS5）</td>
 </tr>
 <tr>
 <td><strong>GitHub CLI</strong></td>

@@ -1,0 +1,96 @@
+/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+获取 GitHub token...
+获取 Lists 信息...
+找到 10 个 Lists
+读取了 1234 个项目
+正在分类...
+可归类: 1234
+
+各 List 预计项目数:
+  dev tools: 230
+  infra: 172
+  generative ai: 166
+  learning: 164
+  llm: 111
+  medias & others: 104
+  ai agents: 94
+  cloud native: 78
+  system & network: 72
+  languages & libs: 43
+
+开始批量添加，每批 5 个...
+  进度: 50/1234 (4%) 成功: 50 失败: 0
+  进度: 100/1234 (8%) 成功: 100 失败: 0
+  进度: 150/1234 (12%) 成功: 150 失败: 0
+  进度: 200/1234 (16%) 成功: 200 失败: 0
+  进度: 250/1234 (20%) 成功: 250 失败: 0
+  进度: 300/1234 (24%) 成功: 300 失败: 0
+  进度: 350/1234 (28%) 成功: 350 失败: 0
+  进度: 400/1234 (32%) 成功: 400 失败: 0
+  进度: 450/1234 (36%) 成功: 450 失败: 0
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:1129)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/urllib3/util/retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /graphql (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yusizhen/soft/projects/ys-learn/scripts/bulk-add-fast.py", line 237, in <module>
+    main()
+  File "/Users/yusizhen/soft/projects/ys-learn/scripts/bulk-add-fast.py", line 209, in main
+    results = batch_mutate(token, batch_items)
+  File "/Users/yusizhen/soft/projects/ys-learn/scripts/bulk-add-fast.py", line 110, in batch_mutate
+    resp = requests.post(
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/requests/adapters.py", line 675, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='api.github.com', port=443): Max retries exceeded with url: /graphql (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1129)')))
+/Users/yusizhen/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+获取 Lists 信息...
+找到 10 个 Lists
+读取了 1234 个项目
+正在分类...
+可归类: 1234
+
+各 List 预计项目数:
+  dev tools: 230
+  infra: 172
+  generative ai: 166
+  learning: 164
+  llm: 111
+  medias & others: 104
+  ai agents: 94
+  cloud native: 78
+  system & network: 72
+  languages & libs: 43
+
+开始批量添加，每批 3 个...
+  进度: 150/1234 (12%) 成功: 150 失败: 0
+  进度: 300/1234 (24%) 成功: 300 失败: 0
+  进度: 450/1234 (36%) 成功: 450 失败: 0
+  进度: 600/1234 (48%) 成功: 600 失败: 0
+  进度: 750/1234 (60%) 成功: 750 失败: 0
+  进度: 900/1234 (72%) 成功: 900 失败: 0
+  进度: 1050/1234 (85%) 成功: 1050 失败: 0
+  进度: 1200/1234 (97%) 成功: 1200 失败: 0
+  进度: 1234/1234 (100%) 成功: 1234 失败: 0
+
+完成！成功: 1234, 失败: 0

@@ -1,1 +1,18 @@
+# 参考项目
 refer/
+
+# Python 通用
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 编辑器 / macOS
+.DS_Store
+.idea/
+.vscode/
