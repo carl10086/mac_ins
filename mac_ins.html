@@ -887,6 +887,34 @@ cursor-text = #1e1e2e
 mouse-hide-while-typing = true
 confirm-close-surface = false
 </code></pre>
+<h3>5.4 <code>~/.config/zsh/task-aliases.zsh</code></h3>
+<p>Taskwarrior CLI 和 <code>taskwarrior-tui</code> 使用同一个任务数据库。配置任务别名：</p>
+<pre><code class="language-zsh">alias t='task'
+alias tt='taskwarrior-tui'
+alias ttc='taskwarrior-tui -r completed'
+alias tw='timew'
+</code></pre>
+<p>重新加载配置后，使用 <code>ttc</code> 直接打开已完成任务列表：</p>
+<pre><code class="language-bash">source ~/.config/zsh/task-aliases.zsh
+ttc
+</code></pre>
+<p>在 TUI 中：</p>
+<ul>
+<li><code>j</code> / <code>k</code>：上下选择任务</li>
+<li><code>/</code>：按关键词筛选</li>
+<li><code>z</code>：查看任务详情</li>
+<li><code>R</code>：切换任务报表</li>
+<li><code>?</code>：查看全部快捷键</li>
+<li><code>q</code>：退出</li>
+</ul>
+<p>命令行查看方式：</p>
+<pre><code class="language-bash"># 查看全部已完成任务
+task completed
+
+# 查看最近 7 天完成的任务
+task completed end.after:today-7days
+</code></pre>
+<p><code>tw summary :day</code> 查看的是时间记录，不是任务完成列表。TUI 必须在真实终端中运行。</p>
 <hr>
 <h2>6. 安装 zoxide 和 fzf（可选但强烈推荐）</h2>
 <pre><code class="language-bash">brew install zoxide fzf
