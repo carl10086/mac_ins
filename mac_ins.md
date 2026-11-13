@@ -235,6 +235,45 @@ cursor-text = #1e1e2e
 mouse-hide-while-typing = true
 confirm-close-surface = false
 ```
+### 5.4 `~/.config/zsh/task-aliases.zsh`
+
+Taskwarrior CLI 和 `taskwarrior-tui` 使用同一个任务数据库。配置任务别名：
+
+```zsh
+alias t='task'
+alias tt='taskwarrior-tui'
+alias ttc='taskwarrior-tui -r completed'
+alias tw='timew'
+```
+
+重新加载配置后，使用 `ttc` 直接打开已完成任务列表：
+
+```bash
+source ~/.config/zsh/task-aliases.zsh
+ttc
+```
+
+在 TUI 中：
+
+- `j` / `k`：上下选择任务
+- `/`：按关键词筛选
+- `z`：查看任务详情
+- `R`：切换任务报表
+- `?`：查看全部快捷键
+- `q`：退出
+
+命令行查看方式：
+
+```bash
+# 查看全部已完成任务
+task completed
+
+# 查看最近 7 天完成的任务
+task completed end.after:today-7days
+```
+
+`tw summary :day` 查看的是时间记录，不是任务完成列表。TUI 必须在真实终端中运行。
+
 
 ---
 
