@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taskwarrior 3.5 Quick Start</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #111111;
+    --panel-2: #161b22;
+    --code-bg: #0d1117;
+    --border: #21262d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --dim: #6e7681;
+    --green: #33ff00;
+    --green-dim: #2ea043;
+    --cyan: #00f0ff;
+    --yellow: #f9e2af;
+    --red: #f38ba8;
+    --blue: #89b4fa;
+    --purple: #cba6f7;
+    --orange: #fab387;
+    --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: rgba(51, 255, 0, .22); }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #2a3138; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a424a; }
+
+  .wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+
+  /* Hero */
+  .hero {
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(900px 260px at 18% -40%, rgba(51, 255, 0, .10), transparent 60%),
+      radial-gradient(700px 220px at 85% -60%, rgba(0, 240, 255, .08), transparent 60%),
+      var(--panel);
+    padding: 58px 0 40px;
+  }
+
+  .kicker {
+    font-size: 11px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 48px);
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    font-weight: 700;
+  }
+
+  h1 .dim { color: var(--dim); font-weight: 400; }
+
+  .sub {
+    margin-top: 14px;
+    max-width: 760px;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+
+  .badge {
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 3px 11px;
+    font-size: 11.5px;
+  }
+
+  .badge b { color: var(--cyan); font-weight: 500; }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 208px minmax(0, 1fr);
+    gap: 56px;
+    padding: 48px 0 80px;
+  }
+
+  .toc {
+    position: sticky;
+    top: 28px;
+    align-self: start;
+    font-size: 12.5px;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .toc-title {
+    color: var(--dim);
+    font-size: 10.5px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .toc ol { list-style: none; counter-reset: toc; }
+  .toc li { counter-increment: toc; margin-bottom: 7px; }
+
+  .toc a {
+    color: var(--muted);
+    text-decoration: none;
+    display: block;
+    transition: color .12s;
+  }
+
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero) "  ";
+    color: #3d444d;
+  }
+
+  .toc a:hover { color: var(--green); }
+
+  /* Sections */
+  section { margin-bottom: 58px; scroll-margin-top: 24px; }
+
+  h2 {
+    font-size: 15px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text);
+    border-left: 3px solid var(--green);
+    padding-left: 12px;
+    margin-bottom: 20px;
+  }
+
+  h2 .num {
+    color: var(--green);
+    margin-right: 10px;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: 13px;
+    color: var(--blue);
+    margin: 26px 0 10px;
+    font-weight: 500;
+  }
+
+  p { margin-bottom: 12px; color: #c9d1d9; }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  strong { color: var(--text); font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    background: var(--panel-2);
+    color: var(--green);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--green-dim);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 12px 0 18px;
+    line-height: 1.6;
+  }
+
+  pre code {
+    background: none;
+    color: #c9d1d9;
+    padding: 0;
+    font-size: 12.8px;
+    white-space: pre;
+  }
+
+  pre.out {
+    border-left-color: #30363d;
+    margin-top: -10px;
+  }
+
+  pre.out code { color: var(--muted); font-size: 12.2px; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 12px 0 20px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.8px; }
+
+  th {
+    text-align: left;
+    background: var(--panel-2);
+    color: var(--muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    padding: 9px 12px;
+    white-space: nowrap;
+  }
+
+  td {
+    border-bottom: 1px solid #171c22;
+    padding: 9px 12px;
+    vertical-align: top;
+    color: #c9d1d9;
+  }
+
+  td:first-child { color: var(--text); white-space: nowrap; }
+  td code { font-size: 12px; }
+
+  /* Callouts */
+  .callout {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--dim);
+    background: var(--panel);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #c9d1d9;
+  }
+
+  .callout b { display: block; margin-bottom: 3px; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; }
+
+  .tip { border-left-color: var(--cyan); }
+  .tip b { color: var(--cyan); }
+
+  .warn { border-left-color: var(--yellow); }
+  .warn b { color: var(--yellow); }
+
+  .danger { border-left-color: var(--red); }
+  .danger b { color: var(--red); }
+
+  kbd {
+    border: 1px solid #30363d;
+    border-bottom-width: 2px;
+    background: var(--panel-2);
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+
+  .steps { list-style: none; counter-reset: step; }
+
+  .steps > li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 34px;
+    margin-bottom: 26px;
+  }
+
+  .steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--green);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .steps h3 { margin-top: 0; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 44px;
+    color: var(--dim);
+    font-size: 12px;
+  }
+
+  @media (max-width: 860px) {
+    .wrap { width: calc(100% - 32px); }
+    .layout { grid-template-columns: 1fr; gap: 32px; padding-top: 32px; }
+    .toc {
+      position: static;
+      border-left: none;
+      border-bottom: 1px solid var(--border);
+      padding: 0 0 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+    }
+    .toc-title { width: 100%; margin-bottom: 6px; }
+    .toc ol { display: flex; flex-wrap: wrap; gap: 4px 16px; list-style: none; }
+    .toc li { margin: 0; }
+    .hero { padding: 40px 0 30px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Quick Start · 实机验证 2026-11-06</div>
+    <h1>Taskwarrior 3.5 <span class="dim">/ 每日闭环</span></h1>
+    <p class="sub">
+      一个入口解决“现在该做什么”：随手收集，urgency 自动排序，开工打点，收工对账。
+      时间账本交给 Timewarrior，看板交给 taskwarrior-tui。
+    </p>
+    <div class="badges">
+      <span class="badge">task <b>3.5.0</b></span>
+      <span class="badge">timewarrior <b>1.10.0</b></span>
+      <span class="badge">taskwarrior-tui <b>0.27.0</b></span>
+      <span class="badge">macOS arm64 · Homebrew</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout wrap">
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#install">安装</a></li>
+      <li><a href="#init">初始化</a></li>
+      <li><a href="#daily">每日闭环</a></li>
+      <li><a href="#syntax">语法速查</a></li>
+      <li><a href="#time">时间账本</a></li>
+      <li><a href="#tui">TUI</a></li>
+      <li><a href="#backup">备份与迁移</a></li>
+      <li><a href="#pitfalls">踩坑</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="install">
+      <h2><span class="num">01</span>安装</h2>
+      <p>三个包一次装完，都是 bottle，无编译。</p>
+      <pre><code>brew install task timewarrior taskwarrior-tui</code></pre>
+      <pre class="out"><code>==&gt; Pouring task--3.5.0.arm64_tahoe.bottle.tar.gz
+==&gt; Pouring timewarrior--1.10.0.arm64_tahoe.bottle.tar.gz
+==&gt; Pouring taskwarrior-tui--0.27.0.arm64_tahoe.bottle.tar.gz</code></pre>
+      <p>验证：</p>
+      <pre><code>t --version
+tw --version</code></pre>
+      <pre class="out"><code>3.5.0
+1.10.0</code></pre>
+      <div class="callout tip">
+        <b>已带补全</b>
+        Homebrew 会把 zsh completion 装到 <code>/opt/homebrew/share/zsh/site-functions</code>，新开终端即生效。
+      </div>
+    </section>
+
+    <section id="init">
+      <h2><span class="num">02</span>初始化</h2>
+
+      <h3>2.1 先给 Taskwarrior 一个 rc 文件</h3>
+      <p>3.5 找不到 <code>~/.taskrc</code> 会直接拒绝执行（<code>Cannot proceed without rc file.</code>）。最小配置：</p>
+      <pre><code># ~/.taskrc
+confirmation=no
+dateformat=Y-M-D
+weekstart=monday</code></pre>
+      <p>数据库会自动建在 <code>~/.task/taskchampion.sqlite3</code>，不用手动初始化。</p>
+
+      <h3>2.2 初始化 Timewarrior</h3>
+      <p>首次运行会问两个问题（建配置、建数据库），交互式终端直接答 <code>yes</code>。脚本化就喂进去：</p>
+      <pre><code>printf 'yes\nyes\n' | timew summary :day</code></pre>
+      <p>生成 <code>~/.config/timewarrior/timewarrior.cfg</code> 与 <code>~/.local/share/timewarrior/data</code>。</p>
+
+      <h3>2.3 别名、fzf 与速查表</h3>
+      <p>统一放进 <code>~/.config/zsh/task-aliases.zsh</code>，<code>~/.zshrc</code> 里 source 一行：</p>
+      <pre><code>source ~/.config/zsh/task-aliases.zsh</code></pre>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>命令</th><th>作用</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>t-help</code></td><td>打印全部命令与中文注释，随时查</td></tr>
+            <tr><td><code>t-help due</code></td><td>按关键词过滤条目</td></tr>
+            <tr><td><code>tf</code></td><td>fzf 选任务，看详情</td></tr>
+            <tr><td><code>tf done</code></td><td>fzf 选任务并完成</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>别名 <code>t</code> / <code>tt</code> / <code>tw</code> 也定义在这个文件里。</p>
+    </section>
+
+    <section id="daily">
+      <h2><span class="num">03</span>每日闭环</h2>
+      <p>四步，一天只花几分钟。排序交给 urgency，不要自己盯着列表纠结。</p>
+
+      <ol class="steps">
+        <li>
+          <h3>收集：想到就丢进去</h3>
+          <pre><code>t add "回邮件给客户" due:eod +work
+t add "每周复盘" recur:weekly due:fri</code></pre>
+          <pre class="out"><code>Created task 1.
+Created task 2 (recurrence template).
+Creating recurring task instance '每周复盘'</code></pre>
+          <p>只写描述也能用。<code>due</code>、标签、项目都是可选的，先收进来比分类重要。</p>
+        </li>
+
+        <li>
+          <h3>排期：看 urgency 排序后的前几条</h3>
+          <pre><code>t next
+t next limit:5</code></pre>
+          <pre class="out"><code>ID Age P Project Due Description        Urg
+-- --- - ------- ----- ---------------- ----
+ 1   - H work    12h   回邮件给客户     15.6
+ 2   -   P7D   6d     每周复盘          5.8</code></pre>
+          <p><code>Urg</code> 由 due、priority、标签、age 加权得出。你只需要做最上面那条。</p>
+        </li>
+
+        <li>
+          <h3>执行：开工打点，完成落账</h3>
+          <pre><code>t 1 start
+t 1 done</code></pre>
+          <pre class="out"><code>Starting task 1 '回邮件给客户'.
+Started 1 task.
+Completed task 1 '回邮件给客户'.</code></pre>
+          <p><code>start</code> 会给任务打 Active 标记并抬高 urgency，<code>next</code> 里一眼能看到正在做什么。</p>
+        </li>
+
+        <li>
+          <h3>收尾：看今天完成了什么</h3>
+          <pre><code>t completed
+tw summary :day</code></pre>
+          <pre class="out"><code>ID UUID     Created    Completed  Age Tags Due        Description
+-- -------- ---------- ---------- --- ---- ---------- -----------
+ - 1eb23c32 2026-11-06 2026-11-06 15s work 2026-11-06 回邮件给客户</code></pre>
+          <p>3.x 的已完成任务 ID 显示为 <code>-</code>，用 UUID 定位。复盘按时间范围取：</p>
+          <pre><code>t completed end.after:today-7days
+tw summary :week</code></pre>
+        </li>
+      </ol>
+    </section>
+
+    <section id="syntax">
+      <h2><span class="num">04</span>语法速查</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>需求</th><th>写法</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>今天结束前</td><td><code>due:eod</code></td><td>23:59:59</td></tr>
+            <tr><td>明天</td><td><code>due:tomorrow</code></td><td>次日 00:00</td></tr>
+            <tr><td>N 天后</td><td><code>due:2d</code></td><td>显示为 <code>2d</code></td></tr>
+            <tr><td>指定日期</td><td><code>due:2026-11-10</code></td><td>当天 00:00</td></tr>
+            <tr><td>标签</td><td><code>+work</code></td><td>可多个</td></tr>
+            <tr><td>项目</td><td><code>project:work</code></td><td>单值，可分级 <code>a.b</code></td></tr>
+            <tr><td>优先级</td><td><code>priority:H</code></td><td>H / M / L</td></tr>
+            <tr><td>重复任务</td><td><code>recur:daily</code></td><td>另有 <code>weekly</code> / <code>monthly</code></td></tr>
+            <tr><td>过滤</td><td><code>t +work due:today</code></td><td>条件叠加</td></tr>
+            <tr><td>看某项目</td><td><code>t project:work</code></td><td>直接用报告名也行</td></tr>
+            <tr><td>搜索</td><td><code>t /周报/</code></td><td>描述模糊匹配</td></tr>
+            <tr><td>修改</td><td><code>t 1 modify due:tomorrow priority:L</code></td><td>一次改多个属性</td></tr>
+            <tr><td>撤销</td><td><code>t undo</code></td><td>回退上一条修改</td></tr>
+            <tr><td>集中上下文</td><td><code>t context define work +work</code></td><td>之后自动附加 <code>+work</code></td></tr>
+            <tr><td>关闭上下文</td><td><code>t context none</code></td><td>恢复全局视图</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <b>due 的边界</b>
+        <code>due:today</code> 是今天 00:00，加上去立刻显示逾期（实测 <code>-11h</code>）。
+        想要“今天结束前”，用 <code>due:eod</code>。
+      </div>
+    </section>
+
+    <section id="time">
+      <h2><span class="num">05</span>时间账本</h2>
+      <p>Timewarrior 独立于 Taskwarrior：<code>t start/done</code> 记任务状态，<code>tw start/stop</code> 记时间区间。两者不会自动联动。</p>
+      <pre><code>tw start 写周报
+tw stop
+tw summary :day
+tw summary :week
+tw tags</code></pre>
+      <pre class="out"><code>Wk  Date       Day ID Tags   Start    End      Time   Total
+--- ---------- --- -- ------ -------- -------- ------ -------
+W45 2026-11-06 Fri @1 写周报 11:51:17 11:51:24 0:00:07 0:00:07</code></pre>
+      <p>开工时想一步到位，就在同一行串起来：</p>
+      <pre><code>t 1 start &amp;&amp; tw start 写周报</code></pre>
+      <div class="callout warn">
+        <b>零时长会报错</b>
+        同一秒内 <code>tw start</code> 后立刻 <code>tw stop</code>，会得到
+        <code>The end of a date range must be after the start.</code> 真实计时不受影响。
+      </div>
+    </section>
+
+    <section id="tui">
+      <h2><span class="num">06</span>TUI 看板</h2>
+      <pre><code>tt        # 等价于 taskwarrior-tui</code></pre>
+      <p><kbd>?</kbd> 打开内置键位表，<kbd>q</kbd> 退出。CLI 和 TUI 操作的是同一个数据库，可以混用。</p>
+      <div class="callout danger">
+        <b>必须在真实终端里跑</b>
+        后台启动或把 stdout 重定向到文件，crossterm 会 panic：<code>reader source not set</code>。
+      </div>
+    </section>
+
+    <section id="backup">
+      <h2><span class="num">07</span>备份与迁移</h2>
+      <p>JSON 是稳定的交换格式，跨版本、跨机器都能用：</p>
+      <pre><code>t export &gt; ~/task-backup.json
+t import ~/task-backup.json</code></pre>
+      <pre class="out"><code>Imported 1 tasks.</code></pre>
+      <div class="callout danger">
+        <b>不要直接同步 SQLite 文件</b>
+        3.x 的数据是 <code>~/.task/taskchampion.sqlite3</code>。用 rsync、Syncthing 或 git 直接同步这个文件，
+        官方明确不保证一致性。多机同步请用 <code>task sync</code>（需要服务端），单人单机用 export 备份即可。
+      </div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">08</span>踩坑</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>现象</th><th>原因</th><th>处理</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Cannot proceed without rc file.</code></td>
+              <td>没有 <code>~/.taskrc</code></td>
+              <td>创建最小 rc 文件</td>
+            </tr>
+            <tr>
+              <td>任务一加就显示逾期</td>
+              <td><code>due:today</code> 是当天 00:00</td>
+              <td>改用 <code>due:eod</code></td>
+            </tr>
+            <tr>
+              <td>Timewarrior 卡在 <code>yes/no</code></td>
+              <td>首次初始化询问</td>
+              <td>交互答 yes，或 <code>printf 'yes\nyes\n'</code></td>
+            </tr>
+            <tr>
+              <td><code>reader source not set</code></td>
+              <td>TUI 不在真实 tty 中</td>
+              <td>直接在终端运行 <code>tt</code></td>
+            </tr>
+            <tr>
+              <td>找不到教程里的 <code>pending.data</code></td>
+              <td>那是 2.x 的纯文本存储</td>
+              <td>只看 3.x 文档，数据在 SQLite</td>
+            </tr>
+            <tr>
+              <td>每次启动提示升级</td>
+              <td>3.5 的 release note 未读</td>
+              <td><code>t news</code> 一次，提示消失</td>
+            </tr>
+            <tr>
+              <td><code>TASKRC override:</code> 空提示</td>
+              <td>环境里设了空 <code>TASKRC</code></td>
+              <td><code>unset TASKRC</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout tip">
+        <b>下一步</b>
+        单人单机到这里就够了。需要多机再考虑 <code>task sync</code>（3.5 支持 git 后端，但配置和加密密钥要求更多）。
+        如果你要的是“人类可读、能手改、能 diff”的任务文件，Taskwarrior 3.x 不是这个方向。
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    Taskwarrior 3.5.0 · Timewarrior 1.10.0 · taskwarrior-tui 0.27.0 —
+    命令与输出均在本机 macOS arm64 上实测，2026-11-06。
+  </div>
+</footer>
+
+</body>
+</html>
